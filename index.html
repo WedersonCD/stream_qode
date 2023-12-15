@@ -1,0 +1,69 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/block.css">
+
+
+
+
+
+    <title>Flow Qode</title>
+
+    <script>
+        /*
+        function create_flow_block_code_connection(id,id2){
+
+            const line = new LeaderLine(element1,element2)
+            element.setAttribute('leaderLineObject',line)
+
+            const element1_draggable = element1.getAttribute('draggableObject')
+            const element2_draggable = element2.getAttribute('draggableObject')
+
+            element1_draggable.onMove =()=>line.position()
+            element2_draggable.onMove =()=>line.position()
+
+            element1.setAttribute('draggableObject',element1_draggable)
+            element2.setAttribute('draggableObject',element2_draggable)
+
+        }
+        //*/
+    </script>
+
+    <script src='./js/utils.js'></script>
+    <script src='./js/block.js'></script>
+</head>
+
+<body>
+
+    <section class="header">
+        <div class="header-addBlock">
+            <button onclick="BLOCKS.render_new_block_code()" class="header-addBlock-add">+</button>
+        </div>
+        <div class="header-logo">
+            Flow Qode
+        </div>
+        <div class="header-appSelecion">
+            <label class="header-appSelecion-label" for="header-appSelecion-select">App:</label>
+            <select class="header-appSelecion-select">
+                <option value="option1">Option 1</option>
+                <option value="option2">Option 2</option>
+            </select>
+        </div>
+    </section>
+    <section class="flow">
+        <div onclick="BLOCKS.render_new_block_code()" class="flow-block-start">
+            + Start
+        </div>
+
+    </section>
+
+    <!--libs-->
+    <script src='./js/libs/plain-draggable.min.js'></script>
+    <script src='./js/libs/leader-line.min.js'></script>
+    <script src='./js/libs/ace.js'></script>
+    <script src='./js/libs/htmx.min.js'></script>
+
+</body>
+
+</html>
