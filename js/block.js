@@ -118,6 +118,17 @@ BLOCKS.set_block_name = (blockId,newName)=>{
     
 }
 
+BLOCKS.delete_block = (blockId)=>{
+    const block =BLOCKS.get_block(blockId)
+
+    block.html.miniature.remove()
+    block.html.setup.remove()
+
+    BLOCKS.block_list.pop((item)=>{item.id==blockId})
+
+}
+
+
 BLOCKS.create_stream_block_code_setup = async () => {
 
     const block_code_html = await BLOCKS.get_block_template('stream_block_code_setup', 'html')
@@ -130,11 +141,16 @@ BLOCKS.create_stream_block_code_setup = async () => {
     const block_code_label = block_code_html.querySelector('.stream-block-header-name-label-value')
 
     block_code_label.addEventListener('focusout',(event)=>{
-        console.log(event)
         const blockId=event.target.closest('div[block-id]').getAttribute('block-id')
         BLOCKS.set_block_name(blockId,event.target.textContent)
     })
 
+    //add event to delete the block
+    const block_code_trash = block_code_html.querySelector('.stream-block-header-delete-icon')
+    block_code_trash.addEventListener('click',(event)=>{
+        const blockId=event.target.closest('div[block-id]').getAttribute('block-id')
+        BLOCKS.delete_block(blockId)
+    })
     
 
     return block_code_html
