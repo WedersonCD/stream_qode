@@ -50,3 +50,26 @@
     height: 100%;
     background-color: white;
 }
+
+.stream-block-code-miniature {
+    height: 100px;
+    width: 100px;
+    display: flex;
+    flex-direction: column;
+}
+
+.stream-block-code-miniature-label {
+    flex:1;
+    font-size: 12px;
+}
+
+.stream-block-code-miniature-body {
+    background-color: #f2f2ea;
+    justify-items: center;
+    vertical-align: middle;
+    border: black 1px solid;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex:4
+}
