@@ -5,13 +5,13 @@ BLOCKS.make_it_draggable=(element)=>{
     return new PlainDraggable(element);
  }
 
-BLOCKS.delete_flow_block_start = ()=>{
-    const startBlock = document.getElementsByClassName('flow-block-start')[0]
+BLOCKS.delete_stream_block_start = ()=>{
+    const startBlock = document.getElementsByClassName('stream-block-start')[0]
     startBlock.style.display='none'
 }
 
-BLOCKS.render_flow_block_start = ()=>{
-    const startBlock = document.getElementsByClassName('flow-block-start')[0]
+BLOCKS.render_stream_block_start = ()=>{
+    const startBlock = document.getElementsByClassName('stream-block-start')[0]
     startBlock.style.display='flex'
 }
 
@@ -43,28 +43,28 @@ BLOCKS.get_blocks_rendered=()=>{
 BLOCKS.render_block=(block)=>{
 
     if(BLOCKS.BLOCKS_LIST.length=1){
-        BLOCKS.delete_flow_block_start()
+        BLOCKS.delete_stream_block_start()
     }
 
     if(typeof(block)==='string'){
         block=BLOCKS.get_block(block)
     }
 
-    const flowSection = document.getElementsByClassName('flow')[0];
-    flowSection.appendChild(block.html)
+    const streamSection = document.getElementsByClassName('stream')[0];
+    streamSection.appendChild(block.html)
     block.draggable = BLOCKS.make_it_draggable(block.html)
 
     block.status='rendered'
 
     if(BLOCKS.BLOCKS_LIST.length>1){
-        BLOCKS.delete_flow_block_start()
+        BLOCKS.delete_stream_block_start()
     }
 
 }
 
 BLOCKS.create_block_empty=async ()=>{
     
-    const block_new_html= await BLOCKS.get_block_template('flow_block_empty','html');
+    const block_new_html= await BLOCKS.get_block_template('stream_block_empty','html');
 
     const block_empty ={
         id: Date.now().toString()+'-'+Math.random().toString(16).slice(2),
@@ -80,13 +80,13 @@ BLOCKS.create_block_empty=async ()=>{
 }
 
 
-BLOCKS.create_new_flow_block_code=async ()=>{
+BLOCKS.create_new_stream_block_code=async ()=>{
 
     const block_object=  await BLOCKS.create_block_empty()
     block_object.type='code'
 
-    const block_code_html=   await BLOCKS.get_block_template('flow_block_code','html')
-    const block_code_body = block_code_html.querySelector('.flow-block-code-body')
+    const block_code_html=   await BLOCKS.get_block_template('stream_block_code','html')
+    const block_code_body = block_code_html.querySelector('.stream-block-code-body')
 
     ace.edit(block_code_body)
     console.log(block_code_html)
@@ -96,6 +96,6 @@ BLOCKS.create_new_flow_block_code=async ()=>{
 }
 
 BLOCKS.render_new_block_code=async()=>{
-    block_code=await BLOCKS.create_new_flow_block_code();
+    block_code=await BLOCKS.create_new_stream_block_code();
     BLOCKS.render_block(block_code)
 }
