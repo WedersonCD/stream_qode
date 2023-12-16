@@ -3,10 +3,10 @@ const BLOCKS = {
 }
 BLOCKS.add_block = (block)=>BLOCKS.block_list.push(block);
 BLOCKS.get_blocks = ()=>BLOCKS.block_list;   
-BLOCKS.make_it_draggable = (element) => new PlainDraggable(element);
 BLOCKS.get_block = (blockId) =>  BLOCKS.block_list.find(block => block.id === blockId);
 BLOCKS.get_blocks_rendered = () => BLOCKS.block_list.find(block => block.status === 'rendered');
 BLOCKS.get_blocks_selected = () => BLOCKS.block_list.find(block => block.status === 'selected');
+BLOCKS.make_it_draggable = (element) => new PlainDraggable(element);
 
 
 BLOCKS.delete_stream_block_start = () => {
@@ -36,21 +36,39 @@ BLOCKS.get_block_template = async (blockTempalteName, format) => {
 }
 
 BLOCKS.render_block_miniature = (block)=>{
+
     const blockViewSection = document.getElementsByClassName('content-blockView')[0];
     blockViewSection.appendChild(block.html.miniature)
     BLOCKS.make_it_draggable(block.html.miniature)
+    block.html.miniature.setAttribute('block-id',block.id)
+    
+    block.html.miniature.addEventListener("click",(event)=>{
+        const blockId=event.target.closest('div[block-id]').getAttribute('block-id')
+        BLOCKS.make_it_selected(blockId)
+    })
+    
+
 }
 
 BLOCKS.make_it_selected = (block) =>{
 
+    //check if is't a string parameter
+    if (typeof (block) === 'string') {
+        block = BLOCKS.get_block(block)
+    }
 
     //remove the current select block.
+
     const currentSelectedBlock = BLOCKS.get_blocks_selected()
+
     if(currentSelectedBlock){
+
+        if (currentSelectedBlock.id == block.id)return;
 
         currentSelectedBlock.html.setup.remove()
         currentSelectedBlock.html.miniature.classList.remove('selected')
         currentSelectedBlock.status='rendered'
+
     }
 
     //render the new select block
