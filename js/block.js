@@ -6,6 +6,7 @@ BLOCKS.get_blocks = ()=>BLOCKS.block_list;
 BLOCKS.make_it_draggable = (element) => new PlainDraggable(element);
 BLOCKS.get_block = (blockId) =>  BLOCKS.block_list.find(block => block.id === blockId);
 BLOCKS.get_blocks_rendered = () => BLOCKS.block_list.find(block => block.status === 'rendered');
+BLOCKS.get_blocks_selected = () => BLOCKS.block_list.find(block => block.status === 'selected');
 
 
 BLOCKS.delete_stream_block_start = () => {
@@ -40,6 +41,28 @@ BLOCKS.render_block_miniature = (block)=>{
     BLOCKS.make_it_draggable(block.html.miniature)
 }
 
+BLOCKS.make_it_selected = (block) =>{
+
+
+    //remove the current select block.
+    const currentSelectedBlock = BLOCKS.get_blocks_selected()
+    if(currentSelectedBlock){
+
+        currentSelectedBlock.html.setup.remove()
+        currentSelectedBlock.html.miniature.classList.remove('selected')
+        currentSelectedBlock.status='rendered'
+    }
+
+    //render the new select block
+    const streamSection = document.getElementsByClassName('content-blockSetup')[0];
+    streamSection.appendChild(block.html.setup)
+
+    block.html.miniature.classList.add('selected')
+    block.status='selected'
+
+
+}
+
 BLOCKS.render_block_setup = (block) => {
 
     if (BLOCKS.block_list.length == 1) {
@@ -50,8 +73,7 @@ BLOCKS.render_block_setup = (block) => {
         block = BLOCKS.get_block(block)
     }
 
-    const streamSection = document.getElementsByClassName('content-blockSetup')[0];
-    streamSection.appendChild(block.html.setup)
+    BLOCKS.make_it_selected(block)
 
     if (BLOCKS.block_list.length > 1) {
         BLOCKS.delete_stream_block_start()
@@ -101,7 +123,6 @@ BLOCKS.render_new_block_code = async () => {
     const block_code = await BLOCKS.create_stream_block_code();
     BLOCKS.render_block_setup(block_code)
     BLOCKS.render_block_miniature(block_code)
-    block_code.status = 'rendered'
     BLOCKS.add_block(block_code)
 
 }

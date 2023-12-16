@@ -58,6 +58,12 @@
     flex-direction: column;
 }
 
+.stream-block-code-miniature.selected {
+
+    background-color: lightgreen;
+
+}
+
 .stream-block-code-miniature-label {
     flex:1;
     font-size: 12px;
