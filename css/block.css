@@ -67,6 +67,7 @@
 .stream-block-code-miniature-label {
     flex:1;
     font-size: 12px;
+    text-wrap: nowrap;
 }
 
 .stream-block-code-miniature-body {
