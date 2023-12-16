@@ -50,12 +50,9 @@ BLOCKS.render_block=(block)=>{
         block=BLOCKS.get_block(block)
     }
 
-    const streamSection = document.getElementsByClassName('stream')[0];
+    const streamSection = document.getElementsByClassName('content-blockSetup')[0];
     streamSection.appendChild(block.html)
-    block.draggable = BLOCKS.make_it_draggable(block.html)
-
     block.status='rendered'
-
     if(BLOCKS.BLOCKS_LIST.length>1){
         BLOCKS.delete_stream_block_start()
     }
@@ -85,7 +82,7 @@ BLOCKS.create_new_stream_block_code=async ()=>{
     const block_object=  await BLOCKS.create_block_empty()
     block_object.type='code'
 
-    const block_code_html=   await BLOCKS.get_block_template('stream_block_code','html')
+    const block_code_html=   await BLOCKS.get_block_template('stream_block_code_setup','html')
     const block_code_body = block_code_html.querySelector('.stream-block-code-body')
 
     ace.edit(block_code_body)

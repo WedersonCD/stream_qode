@@ -11,18 +11,22 @@
 .stream-block {
     display: flex;
     flex-direction: column;
-    padding: 5px;
-    width: 300px;
-    height: 300px;
+    height: 100%;
+    width: 100%;
+
 }
 .stream-block-header {
     width: 100%;
     padding: 5px;
 }
+
 .stream-block-header-name {
     display: flex;
-    justify-content: space-between;
     margin-bottom: 5px;
+}
+
+.stream-block-header-name-label {
+    margin-right: 5px;
 }
 
 .stream-block-code-header-options {
@@ -32,23 +36,17 @@
     justify-content: flex-start;
     background-color: white;
     padding: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .stream-block-code{
     display: flex;
     flex-direction: column;
-    height: 400px;
+    height: 100%;
 }
 
 .stream-block-code-body {
-    height: 100%;
-    width: 100%;
-    margin-right: 10px;
     font-size:12px;
     display: flex;
-    justify-content: flex-start;
+    height: 100%;
     background-color: white;
-    padding: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
