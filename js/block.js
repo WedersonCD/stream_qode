@@ -9,11 +9,6 @@ BLOCKS.get_blocks_selected = () => BLOCKS.block_list.find(block => block.status 
 BLOCKS.make_it_draggable = (element) => new PlainDraggable(element);
 
 
-BLOCKS.delete_stream_block_start = () => {
-    const startBlock = document.getElementsByClassName('stream-block-start')[0]
-    startBlock.style.display = 'none'
-}
-
 BLOCKS.render_stream_block_start = () => {
     const startBlock = document.getElementsByClassName('stream-block-start')[0]
     startBlock.style.display = 'flex'
@@ -40,12 +35,13 @@ BLOCKS.render_block_miniature = (block)=>{
     const blockViewSection = document.getElementsByClassName('content-blockView')[0];
     blockViewSection.appendChild(block.html.miniature)
     BLOCKS.make_it_draggable(block.html.miniature)
-    block.html.miniature.setAttribute('block-id',block.id)
     
     block.html.miniature.addEventListener("click",(event)=>{
         const blockId=event.target.closest('div[block-id]').getAttribute('block-id')
         BLOCKS.make_it_selected(blockId)
     })
+
+
     
 
 }
@@ -78,14 +74,11 @@ BLOCKS.make_it_selected = (block) =>{
     block.html.miniature.classList.add('selected')
     block.status='selected'
 
-
 }
 
 BLOCKS.render_block_setup = (block) => {
 
-    if (BLOCKS.block_list.length == 1) {
-        BLOCKS.delete_stream_block_start()
-    }
+
 
     if (typeof (block) === 'string') {
         block = BLOCKS.get_block(block)
@@ -93,9 +86,8 @@ BLOCKS.render_block_setup = (block) => {
 
     BLOCKS.make_it_selected(block)
 
-    if (BLOCKS.block_list.length > 1) {
-        BLOCKS.delete_stream_block_start()
-    }
+
+
 
 }
 
@@ -115,16 +107,30 @@ BLOCKS.create_block_empty = async () => {
 
 BLOCKS.create_stream_block_code_miniature = async () => await BLOCKS.get_block_template('stream_block_code_miniature', 'html');
 
+BLOCKS.change_block_name = (blockId)=>{
+    
+}
+
 BLOCKS.create_stream_block_code_setup = async () => {
 
     const block_code_html = await BLOCKS.get_block_template('stream_block_code_setup', 'html')
+    
+    //Set editable code
     const block_code_body = block_code_html.querySelector('.stream-block-code-body')
-
     ace.edit(block_code_body)
+
+    //add event to change the block name
+    const block_code_edit_icon = block_code_html.querySelector('.stream-block-header-name-icon')
+    block_code_edit_icon.addEventListener('click',(event)=>{
+        const blockId=event.target.closest('div[block-id]').getAttribute('block-id')
+        BLOCKS.change_block_name(blockId)
+    })
+    
 
     return block_code_html
 
 }
+
 
 BLOCKS.create_stream_block_code= async () =>{
     const block_object = await BLOCKS.create_block_empty()
@@ -132,12 +138,16 @@ BLOCKS.create_stream_block_code= async () =>{
     block_object.html.setup= await BLOCKS.create_stream_block_code_setup()
     block_object.html.miniature = await BLOCKS.create_stream_block_code_miniature()
 
+    block_object.html.miniature.setAttribute('block-id',block_object.id)
+    block_object.html.miniature.setAttribute('block-id',block_object.id)
+
     return block_object;
 }
 
 
 
 BLOCKS.render_new_block_code = async () => {
+
     const block_code = await BLOCKS.create_stream_block_code();
     BLOCKS.render_block_setup(block_code)
     BLOCKS.render_block_miniature(block_code)
