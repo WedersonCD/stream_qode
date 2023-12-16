@@ -78,16 +78,11 @@ BLOCKS.make_it_selected = (block) =>{
 
 BLOCKS.render_block_setup = (block) => {
 
-
-
     if (typeof (block) === 'string') {
         block = BLOCKS.get_block(block)
     }
 
     BLOCKS.make_it_selected(block)
-
-
-
 
 }
 
@@ -107,7 +102,19 @@ BLOCKS.create_block_empty = async () => {
 
 BLOCKS.create_stream_block_code_miniature = async () => await BLOCKS.get_block_template('stream_block_code_miniature', 'html');
 
-BLOCKS.change_block_name = (blockId)=>{
+BLOCKS.set_block_name = (blockId,newName)=>{
+    
+    //prevent the new name to be blank
+    newName = newName.replace(/[\r\n]+/gm, '') || 'Invalid Block Name'
+
+    const block = BLOCKS.get_block(blockId)
+    
+    const blockLabelMiniature = block.html.miniature.querySelector('.stream-block-code-miniature-label-value')
+    blockLabelMiniature.textContent=newName
+
+    const blockLabelSetup = block.html.setup.querySelector('.stream-block-header-name-label-value')
+    blockLabelSetup.textContent=newName
+
     
 }
 
@@ -120,11 +127,14 @@ BLOCKS.create_stream_block_code_setup = async () => {
     ace.edit(block_code_body)
 
     //add event to change the block name
-    const block_code_edit_icon = block_code_html.querySelector('.stream-block-header-name-icon')
-    block_code_edit_icon.addEventListener('click',(event)=>{
+    const block_code_label = block_code_html.querySelector('.stream-block-header-name-label-value')
+
+    block_code_label.addEventListener('focusout',(event)=>{
+        console.log(event)
         const blockId=event.target.closest('div[block-id]').getAttribute('block-id')
-        BLOCKS.change_block_name(blockId)
+        BLOCKS.set_block_name(blockId,event.target.textContent)
     })
+
     
 
     return block_code_html
@@ -138,7 +148,7 @@ BLOCKS.create_stream_block_code= async () =>{
     block_object.html.setup= await BLOCKS.create_stream_block_code_setup()
     block_object.html.miniature = await BLOCKS.create_stream_block_code_miniature()
 
-    block_object.html.miniature.setAttribute('block-id',block_object.id)
+    block_object.html.setup.setAttribute('block-id',block_object.id)
     block_object.html.miniature.setAttribute('block-id',block_object.id)
 
     return block_object;
