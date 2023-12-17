@@ -1,12 +1,3 @@
-.stream-block-start {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 150px;
-    height: 40px;
-    cursor: pointer;
-    border: 4px #9c9595 dashed;
-}
 
 .stream-block {
     display: flex;

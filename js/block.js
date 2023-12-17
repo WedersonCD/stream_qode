@@ -130,7 +130,10 @@ BLOCKS.create_block_empty = async () => {
         status: 'created',
         editor: null,
         code: '',
-        name: ''
+        changedAt: null,
+        createdAt: Date.now(),
+        name: '',
+        template_base: null
     }
 
     return block_empty
@@ -153,6 +156,8 @@ BLOCKS.set_block_name = (blockId, newName) => {
     blockLabelSetup.textContent = newName
 
     block.name = newName
+
+    BLOCKS.save_block(blockId)
 
 }
 
@@ -240,6 +245,14 @@ BLOCKS.delete_block = (blockId) => {
 
 }
 
+BLOCKS.save_block = (blockId) =>{
+
+    const block = BLOCKS.get_block(blockId)
+    
+    block.code=block.editor.getValue()
+    block.changedAt=Date.now()
+
+}
 
 BLOCKS.create_stream_block_code_setup = async (block_object) => {
 
@@ -264,7 +277,90 @@ BLOCKS.create_stream_block_code_setup = async (block_object) => {
         BLOCKS.delete_block(blockId)
     })
 
+    //save on focus out
+    block_code_html.addEventListener('focusout',(event)=>{
+        const blockId = event.target.closest('div[block-id]').getAttribute('block-id')
+        BLOCKS.save_block(blockId)
+    })
+
+    //Manual save
+    const block_code_save = block_code_html.querySelector('.stream-block-header-save-icon')
+    block_code_save.addEventListener('click',(event)=>{
+        const blockId = event.target.closest('div[block-id]').getAttribute('block-id')
+        BLOCKS.save_block(blockId)
+    })
+
+    const block_code_template = block_code_html.querySelector('.stream-block-header-template_load-icon')
+    block_code_template.addEventListener('click',(event)=>{
+        const blockId = event.target.closest('div[block-id]').getAttribute('block-id')
+        BLOCKS.open_template_selector(blockId)
+    })
+
     return block_code_html
+
+}
+
+BLOCKS.set_block_code=(block,code) =>{
+    
+    if(typeof(block)=='string')
+        block = BLOCKS.get_block(block);
+
+    block.code = code
+    block.editor.setValue(code)
+
+}
+
+BLOCKS.set_block_code_from_template= async (fileName,blockId)=>{
+    const code = await fetch('./templates/'+fileName,{ mode: "no-cors", credentials: "same-origin" }).then(response => response.text());
+    BLOCKS.set_block_code(blockId,code)
+
+}
+
+BLOCKS.open_template_selector_get_li = (blockId,templateObject)=>{
+
+    const liItem = '<li class="select-template-list-item pointer">'+templateObject.name+'</li>'
+    const liItemHTML = UTILS.text_to_html(liItem)
+    liItemHTML.setAttribute('file',templateObject.file)
+    liItemHTML.setAttribute('block-id',blockId)
+
+    liItemHTML.addEventListener('click',async (event)=>{
+        const fileName = event.target.getAttribute('file')
+        const blockId  = event.target.getAttribute('block-id')
+        await BLOCKS.set_block_code_from_template(fileName,blockId)
+
+        UTILS.close_popup_divs()
+        
+        //clean the UL
+        const templateSelectList = document.querySelector('.select-template-list')
+        templateSelectList.innerHTML='';
+    })
+
+    return liItemHTML
+}
+
+BLOCKS.open_template_selector= async (blockId)=>{
+
+    const templateList = await BLOCKS.get_template_list()
+    
+    UTILS.open_outfocus_div()
+    const templateSelectDIV = document.getElementsByClassName('select-template')[0]
+    templateSelectDIV.classList.remove('display-none')
+
+    const templateSelectList = templateSelectDIV.querySelector('.select-template-list')
+
+    templateList.forEach((item)=>{
+        
+        const liItem = BLOCKS.open_template_selector_get_li(blockId,item)
+        templateSelectList.appendChild(liItem)
+    
+    })
+
+}
+
+BLOCKS.get_template_list = async ()=>{
+
+    const baseFile = await fetch('./template_files.json',{ mode: "no-cors", credentials: "same-origin" }).then(response => response.text());
+    return UTILS.text_to_json(baseFile)
 
 }
 

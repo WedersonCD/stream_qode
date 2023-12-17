@@ -1,0 +1,12 @@
+[
+    {
+        "name": "Extract SAP Table",
+        "file": "stream_block_code_sap_table_extract.inc",
+        "type": "code"
+    },
+    {
+        "name": "Load Faturamento",
+        "file": "stream_block_code_load_faturamento.inc",
+        "type": "code"
+    }
+]
