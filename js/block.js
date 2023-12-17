@@ -1,9 +1,12 @@
 const BLOCKS = {
     block_list: []
 }
-BLOCKS.add_block = (block)=>BLOCKS.block_list.push(block);
-BLOCKS.get_blocks = ()=>BLOCKS.block_list;   
-BLOCKS.get_block = (blockId) =>  BLOCKS.block_list.find(block => block.id === blockId);
+BLOCKS.get_blocks = () => BLOCKS.block_list;
+BLOCKS.get_block = (blockId) => BLOCKS.block_list.find(block => block.id === blockId);
+BLOCKS.get_block_lastest = () => BLOCKS.block_list[BLOCKS.block_list.length - 1];
+BLOCKS.get_block_first = () => BLOCKS.block_list[0];
+BLOCKS.get_block_list_size = () => BLOCKS.block_list.length;
+
 BLOCKS.get_blocks_rendered = () => BLOCKS.block_list.find(block => block.status === 'rendered');
 BLOCKS.get_blocks_selected = () => BLOCKS.block_list.find(block => block.status === 'selected');
 BLOCKS.make_it_draggable = (element) => new PlainDraggable(element);
@@ -30,23 +33,51 @@ BLOCKS.get_block_template = async (blockTempalteName, format) => {
 
 }
 
-BLOCKS.render_block_miniature = (block)=>{
 
-    const blockViewSection = document.getElementsByClassName('content-blockView')[0];
-    blockViewSection.appendChild(block.html.miniature)
-    BLOCKS.make_it_draggable(block.html.miniature)
-    
-    block.html.miniature.addEventListener("click",(event)=>{
-        const blockId=event.target.closest('div[block-id]').getAttribute('block-id')
-        BLOCKS.make_it_selected(blockId)
-    })
+BLOCKS.add_block = (block) => {
 
+    if (BLOCKS.get_block_list_size() > 0) {
+        const block_lastest = BLOCKS.get_block_lastest()
+        block_lastest.right = block
+        block.left = block_lastest
 
-    
+    }
+
+    BLOCKS.block_list.push(block);
 
 }
 
-BLOCKS.make_it_selected = (block) =>{
+BLOCKS.render_block_miniature_draggable = (block) => {
+
+    block.draggable = BLOCKS.make_it_draggable(block.html.miniature)
+
+    block.draggable.onMove = () => {
+        if (block.left) block.line.left.position();
+        if (block.right) block.line.right.position();
+    }
+
+}
+
+BLOCKS.render_block_miniature = (block) => {
+
+    const blockViewSection = document.getElementsByClassName('content-blockView')[0];
+    blockViewSection.appendChild(block.html.miniature)
+
+    BLOCKS.render_block_miniature_draggable(block)
+
+    block.html.miniature.addEventListener("click", (event) => {
+        const blockId = event.target.closest('div[block-id]').getAttribute('block-id')
+        BLOCKS.make_it_selected(blockId)
+    })
+
+    if (BLOCKS.block_list.length >= 1) {
+        BLOCKS.create_blocks_lines(BLOCKS.get_block_lastest(),block)
+
+    }
+
+}
+
+BLOCKS.make_it_selected = (block) => {
 
     //check if is't a string parameter
     if (typeof (block) === 'string') {
@@ -57,13 +88,13 @@ BLOCKS.make_it_selected = (block) =>{
 
     const currentSelectedBlock = BLOCKS.get_blocks_selected()
 
-    if(currentSelectedBlock){
+    if (currentSelectedBlock) {
 
-        if (currentSelectedBlock.id == block.id)return;
+        if (currentSelectedBlock.id == block.id) return;
 
         currentSelectedBlock.html.setup.remove()
         currentSelectedBlock.html.miniature.classList.remove('selected')
-        currentSelectedBlock.status='rendered'
+        currentSelectedBlock.status = 'rendered'
 
     }
 
@@ -72,7 +103,7 @@ BLOCKS.make_it_selected = (block) =>{
     streamSection.appendChild(block.html.setup)
 
     block.html.miniature.classList.add('selected')
-    block.status='selected'
+    block.status = 'selected'
 
 }
 
@@ -92,7 +123,13 @@ BLOCKS.create_block_empty = async () => {
         id: Date.now().toString() + '-' + Math.random().toString(16).slice(2),
         type: '',
         html: {},
+        line: { left: null, right: null },
+        left: null,
+        right: null,
+        draggable: null,
         status: 'created',
+        editor: null,
+        code: '',
         name: ''
     }
 
@@ -102,75 +139,146 @@ BLOCKS.create_block_empty = async () => {
 
 BLOCKS.create_stream_block_code_miniature = async () => await BLOCKS.get_block_template('stream_block_code_miniature', 'html');
 
-BLOCKS.set_block_name = (blockId,newName)=>{
-    
+BLOCKS.set_block_name = (blockId, newName) => {
+
     //prevent the new name to be blank
     newName = newName.replace(/[\r\n]+/gm, '') || 'Invalid Block Name'
 
     const block = BLOCKS.get_block(blockId)
-    
+
     const blockLabelMiniature = block.html.miniature.querySelector('.stream-block-code-miniature-label-value')
-    blockLabelMiniature.textContent=newName
+    blockLabelMiniature.textContent = newName
 
     const blockLabelSetup = block.html.setup.querySelector('.stream-block-header-name-label-value')
-    blockLabelSetup.textContent=newName
+    blockLabelSetup.textContent = newName
 
-    
+    block.name = newName
+
 }
 
-BLOCKS.delete_block = (blockId)=>{
-    const block =BLOCKS.get_block(blockId)
+BLOCKS.delete_block_line_side = (block,side) => {
+
+    if(block.line[side]){
+        block.line[side].remove()
+        block.line[side]=null
+    }
+
+}
+
+
+BLOCKS.delete_block_lines = (block) => {
+    
+    BLOCKS.delete_block_line_side(block,'left')
+    BLOCKS.delete_block_line_side(block,'right')
+
+}
+
+
+BLOCKS.create_blocks_lines = (block_left,block_right) => {
+
+    //clean blocks lines
+    BLOCKS.delete_block_line_side(block_left,'right')
+    BLOCKS.delete_block_line_side(block_right,'left')
+
+    const newLine = new LeaderLine(block_left.html.miniature, block_right.html.miniature)
+
+    block_left.line.right = newLine
+    block_right.line.left = newLine
+
+}
+
+BLOCKS.detach_block_lines = (block) => {
+
+    //is the lastest block
+    if (block.right == null) {
+        BLOCKS.delete_block_line_side(block.left,'right')
+        
+        //is the first block
+    } else if (block.left == null) {
+        BLOCKS.delete_block_line_side(block.right,'left')
+
+        //is a middle block
+    } else {
+        BLOCKS.create_blocks_lines(block.left,block.right)
+
+    }
+
+}
+
+BLOCKS.detach_block = (block) => {
+
+    //is the lastest block
+    if (block.right == null) {
+        block.left.right = null;
+        
+        //is the first block
+    } else if (block.left == null) {
+        block.right.left = null
+
+        //is a middle block
+    } else {
+        block.left.right = block.right
+        block.right.left = block.left
+    }
+
+}
+
+BLOCKS.delete_block = (blockId) => {
+
+    const block = BLOCKS.get_block(blockId)
 
     block.html.miniature.remove()
     block.html.setup.remove()
 
-    BLOCKS.block_list.pop((item)=>{item.id==blockId})
+    if (BLOCKS.get_block_list_size() > 1) {
+        BLOCKS.detach_block_lines(block)
+        BLOCKS.detach_block(block)
+
+    }
+
+    UTILS.remove_element_from_object_list(BLOCKS.get_blocks(),'id',blockId)
 
 }
 
 
-BLOCKS.create_stream_block_code_setup = async () => {
+BLOCKS.create_stream_block_code_setup = async (block_object) => {
 
     const block_code_html = await BLOCKS.get_block_template('stream_block_code_setup', 'html')
-    
+
     //Set editable code
     const block_code_body = block_code_html.querySelector('.stream-block-code-body')
-    ace.edit(block_code_body)
+    block_object.editor= ace.edit(block_code_body)
 
     //add event to change the block name
     const block_code_label = block_code_html.querySelector('.stream-block-header-name-label-value')
 
-    block_code_label.addEventListener('focusout',(event)=>{
-        const blockId=event.target.closest('div[block-id]').getAttribute('block-id')
-        BLOCKS.set_block_name(blockId,event.target.textContent)
+    block_code_label.addEventListener('focusout', (event) => {
+        const blockId = event.target.closest('div[block-id]').getAttribute('block-id')
+        BLOCKS.set_block_name(blockId, event.target.textContent)
     })
 
     //add event to delete the block
     const block_code_trash = block_code_html.querySelector('.stream-block-header-delete-icon')
-    block_code_trash.addEventListener('click',(event)=>{
-        const blockId=event.target.closest('div[block-id]').getAttribute('block-id')
+    block_code_trash.addEventListener('click', (event) => {
+        const blockId = event.target.closest('div[block-id]').getAttribute('block-id')
         BLOCKS.delete_block(blockId)
     })
-    
 
     return block_code_html
 
 }
 
-
-BLOCKS.create_stream_block_code= async () =>{
+BLOCKS.create_stream_block_code = async () => {
     const block_object = await BLOCKS.create_block_empty()
     block_object.type = 'code'
-    block_object.html.setup= await BLOCKS.create_stream_block_code_setup()
+    block_object.html.setup = await BLOCKS.create_stream_block_code_setup(block_object)
     block_object.html.miniature = await BLOCKS.create_stream_block_code_miniature()
 
-    block_object.html.setup.setAttribute('block-id',block_object.id)
-    block_object.html.miniature.setAttribute('block-id',block_object.id)
+    block_object.html.setup.setAttribute('block-id', block_object.id)
+    block_object.html.miniature.setAttribute('block-id', block_object.id)
 
     return block_object;
 }
-
-
 
 BLOCKS.render_new_block_code = async () => {
 
