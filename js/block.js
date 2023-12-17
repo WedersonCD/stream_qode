@@ -130,6 +130,8 @@ BLOCKS.create_block_empty = async () => {
         status: 'created',
         editor: null,
         code: '',
+        changedAt: null,
+        createdAt: Date.now(),
         name: ''
     }
 
@@ -153,6 +155,8 @@ BLOCKS.set_block_name = (blockId, newName) => {
     blockLabelSetup.textContent = newName
 
     block.name = newName
+
+    BLOCKS.save_block(blockId)
 
 }
 
@@ -240,6 +244,14 @@ BLOCKS.delete_block = (blockId) => {
 
 }
 
+BLOCKS.save_block = (blockId) =>{
+
+    const block = BLOCKS.get_block(blockId)
+    
+    block.code=block.editor.getValue()
+    block.changedAt=Date.now()
+
+}
 
 BLOCKS.create_stream_block_code_setup = async (block_object) => {
 
@@ -263,6 +275,20 @@ BLOCKS.create_stream_block_code_setup = async (block_object) => {
         const blockId = event.target.closest('div[block-id]').getAttribute('block-id')
         BLOCKS.delete_block(blockId)
     })
+
+    //save on focus out
+    block_code_html.addEventListener('focusout',(event)=>{
+        const blockId = event.target.closest('div[block-id]').getAttribute('block-id')
+        BLOCKS.save_block(blockId)
+    })
+
+    //Manual save
+    const block_code_save = block_code_html.querySelector('.stream-block-header-save-icon')
+    block_code_save.addEventListener('click',(event)=>{
+        const blockId = event.target.closest('div[block-id]').getAttribute('block-id')
+        BLOCKS.save_block(blockId)
+    })
+    
 
     return block_code_html
 
