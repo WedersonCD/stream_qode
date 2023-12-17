@@ -1,101 +1,290 @@
-const BLOCKS ={}
-BLOCKS.BLOCKS_LIST = []
+const BLOCKS = {
+    block_list: []
+}
+BLOCKS.get_blocks = () => BLOCKS.block_list;
+BLOCKS.get_block = (blockId) => BLOCKS.block_list.find(block => block.id === blockId);
+BLOCKS.get_block_lastest = () => BLOCKS.block_list[BLOCKS.block_list.length - 1];
+BLOCKS.get_block_first = () => BLOCKS.block_list[0];
+BLOCKS.get_block_list_size = () => BLOCKS.block_list.length;
 
-BLOCKS.make_it_draggable=(element)=>{
-    return new PlainDraggable(element);
- }
+BLOCKS.get_blocks_rendered = () => BLOCKS.block_list.find(block => block.status === 'rendered');
+BLOCKS.get_blocks_selected = () => BLOCKS.block_list.find(block => block.status === 'selected');
+BLOCKS.make_it_draggable = (element) => new PlainDraggable(element);
 
-BLOCKS.delete_flow_block_start = ()=>{
-    const startBlock = document.getElementsByClassName('flow-block-start')[0]
-    startBlock.style.display='none'
+
+BLOCKS.render_stream_block_start = () => {
+    const startBlock = document.getElementsByClassName('stream-block-start')[0]
+    startBlock.style.display = 'flex'
 }
 
-BLOCKS.render_flow_block_start = ()=>{
-    const startBlock = document.getElementsByClassName('flow-block-start')[0]
-    startBlock.style.display='flex'
-}
+BLOCKS.get_block_template = async (blockTempalteName, format) => {
 
-BLOCKS.get_block_template =async (blockTempalteName,format)=>{
+    format = format || 'text'
 
-    format=format || 'text'
+    rawHtml = await fetch('./blocks/' + blockTempalteName + '.html', { mode: "no-cors", credentials: "same-origin" }).then(response => response.text())
 
-    rawHtml=await fetch('./blocks/'+blockTempalteName+'.html',{mode: "no-cors",credentials: "same-origin"}).then(response=>response.text())
-
-    if(format==='text'){
+    if (format === 'text') {
         return rawHtml
     }
 
-    if(format==='html'){
+    if (format === 'html') {
         return UTILS.text_to_html(rawHtml)
     }
 
 }
-BLOCKS.get_block=(blockId)=>{
-
-    return BLOCKS.BLOCKS_LIST.find(block => block.id === blockId);
-}
-BLOCKS.get_blocks_rendered=()=>{
-
-    return BLOCKS.BLOCKS_LIST.find(block => block.status === 'rendered');
-}
 
 
-BLOCKS.render_block=(block)=>{
+BLOCKS.add_block = (block) => {
 
-    if(BLOCKS.BLOCKS_LIST.length=1){
-        BLOCKS.delete_flow_block_start()
+    if (BLOCKS.get_block_list_size() > 0) {
+        const block_lastest = BLOCKS.get_block_lastest()
+        block_lastest.right = block
+        block.left = block_lastest
+
     }
 
-    if(typeof(block)==='string'){
-        block=BLOCKS.get_block(block)
-    }
+    BLOCKS.block_list.push(block);
 
-    const flowSection = document.getElementsByClassName('flow')[0];
-    flowSection.appendChild(block.html)
-    block.draggable = BLOCKS.make_it_draggable(block.html)
+}
 
-    block.status='rendered'
+BLOCKS.render_block_miniature_draggable = (block) => {
 
-    if(BLOCKS.BLOCKS_LIST.length>1){
-        BLOCKS.delete_flow_block_start()
+    block.draggable = BLOCKS.make_it_draggable(block.html.miniature)
+
+    block.draggable.onMove = () => {
+        if (block.left) block.line.left.position();
+        if (block.right) block.line.right.position();
     }
 
 }
 
-BLOCKS.create_block_empty=async ()=>{
-    
-    const block_new_html= await BLOCKS.get_block_template('flow_block_empty','html');
+BLOCKS.render_block_miniature = (block) => {
 
-    const block_empty ={
-        id: Date.now().toString()+'-'+Math.random().toString(16).slice(2),
+    const blockViewSection = document.getElementsByClassName('content-blockView')[0];
+    blockViewSection.appendChild(block.html.miniature)
+
+    BLOCKS.render_block_miniature_draggable(block)
+
+    block.html.miniature.addEventListener("click", (event) => {
+        const blockId = event.target.closest('div[block-id]').getAttribute('block-id')
+        BLOCKS.make_it_selected(blockId)
+    })
+
+    if (BLOCKS.block_list.length >= 1) {
+        BLOCKS.create_blocks_lines(BLOCKS.get_block_lastest(),block)
+
+    }
+
+}
+
+BLOCKS.make_it_selected = (block) => {
+
+    //check if is't a string parameter
+    if (typeof (block) === 'string') {
+        block = BLOCKS.get_block(block)
+    }
+
+    //remove the current select block.
+
+    const currentSelectedBlock = BLOCKS.get_blocks_selected()
+
+    if (currentSelectedBlock) {
+
+        if (currentSelectedBlock.id == block.id) return;
+
+        currentSelectedBlock.html.setup.remove()
+        currentSelectedBlock.html.miniature.classList.remove('selected')
+        currentSelectedBlock.status = 'rendered'
+
+    }
+
+    //render the new select block
+    const streamSection = document.getElementsByClassName('content-blockSetup')[0];
+    streamSection.appendChild(block.html.setup)
+
+    block.html.miniature.classList.add('selected')
+    block.status = 'selected'
+
+}
+
+BLOCKS.render_block_setup = (block) => {
+
+    if (typeof (block) === 'string') {
+        block = BLOCKS.get_block(block)
+    }
+
+    BLOCKS.make_it_selected(block)
+
+}
+
+BLOCKS.create_block_empty = async () => {
+
+    const block_empty = {
+        id: Date.now().toString() + '-' + Math.random().toString(16).slice(2),
         type: '',
-        html: block_new_html,
+        html: {},
+        line: { left: null, right: null },
+        left: null,
+        right: null,
+        draggable: null,
         status: 'created',
+        editor: null,
+        code: '',
+        name: ''
     }
-
-    BLOCKS.BLOCKS_LIST.push[block_empty]
 
     return block_empty
 
 }
 
+BLOCKS.create_stream_block_code_miniature = async () => await BLOCKS.get_block_template('stream_block_code_miniature', 'html');
 
-BLOCKS.create_new_flow_block_code=async ()=>{
+BLOCKS.set_block_name = (blockId, newName) => {
 
-    const block_object=  await BLOCKS.create_block_empty()
-    block_object.type='code'
+    //prevent the new name to be blank
+    newName = newName.replace(/[\r\n]+/gm, '') || 'Invalid Block Name'
 
-    const block_code_html=   await BLOCKS.get_block_template('flow_block_code','html')
-    const block_code_body = block_code_html.querySelector('.flow-block-code-body')
+    const block = BLOCKS.get_block(blockId)
 
-    ace.edit(block_code_body)
-    console.log(block_code_html)
-    block_object.html.appendChild(block_code_html)
+    const blockLabelMiniature = block.html.miniature.querySelector('.stream-block-code-miniature-label-value')
+    blockLabelMiniature.textContent = newName
 
-    return block_object
+    const blockLabelSetup = block.html.setup.querySelector('.stream-block-header-name-label-value')
+    blockLabelSetup.textContent = newName
+
+    block.name = newName
+
 }
 
-BLOCKS.render_new_block_code=async()=>{
-    block_code=await BLOCKS.create_new_flow_block_code();
-    BLOCKS.render_block(block_code)
+BLOCKS.delete_block_line_side = (block,side) => {
+
+    if(block.line[side]){
+        block.line[side].remove()
+        block.line[side]=null
+    }
+
+}
+
+
+BLOCKS.delete_block_lines = (block) => {
+    
+    BLOCKS.delete_block_line_side(block,'left')
+    BLOCKS.delete_block_line_side(block,'right')
+
+}
+
+
+BLOCKS.create_blocks_lines = (block_left,block_right) => {
+
+    //clean blocks lines
+    BLOCKS.delete_block_line_side(block_left,'right')
+    BLOCKS.delete_block_line_side(block_right,'left')
+
+    const newLine = new LeaderLine(block_left.html.miniature, block_right.html.miniature)
+
+    block_left.line.right = newLine
+    block_right.line.left = newLine
+
+}
+
+BLOCKS.detach_block_lines = (block) => {
+
+    //is the lastest block
+    if (block.right == null) {
+        BLOCKS.delete_block_line_side(block.left,'right')
+        
+        //is the first block
+    } else if (block.left == null) {
+        BLOCKS.delete_block_line_side(block.right,'left')
+
+        //is a middle block
+    } else {
+        BLOCKS.create_blocks_lines(block.left,block.right)
+
+    }
+
+}
+
+BLOCKS.detach_block = (block) => {
+
+    //is the lastest block
+    if (block.right == null) {
+        block.left.right = null;
+        
+        //is the first block
+    } else if (block.left == null) {
+        block.right.left = null
+
+        //is a middle block
+    } else {
+        block.left.right = block.right
+        block.right.left = block.left
+    }
+
+}
+
+BLOCKS.delete_block = (blockId) => {
+
+    const block = BLOCKS.get_block(blockId)
+
+    block.html.miniature.remove()
+    block.html.setup.remove()
+
+    if (BLOCKS.get_block_list_size() > 1) {
+        BLOCKS.detach_block_lines(block)
+        BLOCKS.detach_block(block)
+
+    }
+
+    UTILS.remove_element_from_object_list(BLOCKS.get_blocks(),'id',blockId)
+
+}
+
+
+BLOCKS.create_stream_block_code_setup = async (block_object) => {
+
+    const block_code_html = await BLOCKS.get_block_template('stream_block_code_setup', 'html')
+
+    //Set editable code
+    const block_code_body = block_code_html.querySelector('.stream-block-code-body')
+    block_object.editor= ace.edit(block_code_body)
+
+    //add event to change the block name
+    const block_code_label = block_code_html.querySelector('.stream-block-header-name-label-value')
+
+    block_code_label.addEventListener('focusout', (event) => {
+        const blockId = event.target.closest('div[block-id]').getAttribute('block-id')
+        BLOCKS.set_block_name(blockId, event.target.textContent)
+    })
+
+    //add event to delete the block
+    const block_code_trash = block_code_html.querySelector('.stream-block-header-delete-icon')
+    block_code_trash.addEventListener('click', (event) => {
+        const blockId = event.target.closest('div[block-id]').getAttribute('block-id')
+        BLOCKS.delete_block(blockId)
+    })
+
+    return block_code_html
+
+}
+
+BLOCKS.create_stream_block_code = async () => {
+    const block_object = await BLOCKS.create_block_empty()
+    block_object.type = 'code'
+    block_object.html.setup = await BLOCKS.create_stream_block_code_setup(block_object)
+    block_object.html.miniature = await BLOCKS.create_stream_block_code_miniature()
+
+    block_object.html.setup.setAttribute('block-id', block_object.id)
+    block_object.html.miniature.setAttribute('block-id', block_object.id)
+
+    return block_object;
+}
+
+BLOCKS.render_new_block_code = async () => {
+
+    const block_code = await BLOCKS.create_stream_block_code();
+    BLOCKS.render_block_setup(block_code)
+    BLOCKS.render_block_miniature(block_code)
+    BLOCKS.add_block(block_code)
+
 }

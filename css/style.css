@@ -6,6 +6,8 @@ body {
     margin: 0px;
     height: 100%;
     width: 100%;
+    background-color: #f2f2ea;
+
 }
 
 .header {
@@ -17,7 +19,6 @@ body {
     background-color: white;
     margin:0px;
     padding: 20px;
-    border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -62,16 +63,29 @@ body {
     border-color: #007bff;
 }
 
-
-.flow {
-    overflow: scroll;
+.content {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    height: 100%;
     width: 100%;
     flex: 9;
-    background-color: #f2f2ea;
+}
+
+.content-blockSetup {
+    align-items: center;
+    justify-content: center;
+    flex:7;
+    border-right: 1px solid #000;
+    height: 100%;
+    align-items: stretch;
+}
+
+.content-blockView {
+    flex:3;
+    height: 100%;
+
 }
 
 
-
+.display-none {
+    display: none;
+}

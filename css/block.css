@@ -1,4 +1,4 @@
-.flow-block-start {
+.stream-block-start {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -8,47 +8,75 @@
     border: 4px #9c9595 dashed;
 }
 
-.flow-block {
+.stream-block {
     display: flex;
     flex-direction: column;
-    padding: 5px;
-    width: 300px;
-    height: 300px;
+    height: 100%;
+    width: 100%;
+
 }
-.flow-block-header {
+.stream-block-header {
     width: 100%;
     padding: 5px;
 }
-.flow-block-header-name {
+
+.stream-block-header-name {
     display: flex;
-    justify-content: space-between;
     margin-bottom: 5px;
 }
 
-.flow-block-code-header-options {
+.stream-block-header-name-label {
+    margin-right: 5px;
+}
+
+.stream-block-code-header-options {
     font-size:12px;
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
     background-color: white;
     padding: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.flow-block-code{
+.stream-block-code{
     display: flex;
     flex-direction: column;
-    height: 400px;
+    height: 100%;
 }
 
-.flow-block-code-body {
-    height: 100%;
-    width: 100%;
-    margin-right: 10px;
+.stream-block-code-body {
     font-size:12px;
     display: flex;
-    justify-content: flex-start;
+    height: 100%;
     background-color: white;
-    padding: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.stream-block-code-miniature {
+    height: 100px;
+    width: 100px;
+    display: flex;
+    flex-direction: column;
+}
+
+.stream-block-code-miniature.selected {
+
+    background-color: lightgreen;
+
+}
+
+.stream-block-code-miniature-label {
+    flex:1;
+    font-size: 12px;
+    text-wrap: nowrap;
+}
+
+.stream-block-code-miniature-body {
+    background-color: #f2f2ea;
+    justify-items: center;
+    vertical-align: middle;
+    border: black 1px solid;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex:4
 }

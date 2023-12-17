@@ -8,27 +8,7 @@
 
 
 
-    <title>Flow Qode</title>
-
-    <script>
-        /*
-        function create_flow_block_code_connection(id,id2){
-
-            const line = new LeaderLine(element1,element2)
-            element.setAttribute('leaderLineObject',line)
-
-            const element1_draggable = element1.getAttribute('draggableObject')
-            const element2_draggable = element2.getAttribute('draggableObject')
-
-            element1_draggable.onMove =()=>line.position()
-            element2_draggable.onMove =()=>line.position()
-
-            element1.setAttribute('draggableObject',element1_draggable)
-            element2.setAttribute('draggableObject',element2_draggable)
-
-        }
-        //*/
-    </script>
+    <title>Stream Qode</title>
 
     <script src='./js/utils.js'></script>
     <script src='./js/block.js'></script>
@@ -41,7 +21,7 @@
             <button onclick="BLOCKS.render_new_block_code()" class="header-addBlock-add">+</button>
         </div>
         <div class="header-logo">
-            Flow Qode
+            Stream Qode
         </div>
         <div class="header-appSelecion">
             <label class="header-appSelecion-label" for="header-appSelecion-select">App:</label>
@@ -51,10 +31,12 @@
             </select>
         </div>
     </section>
-    <section class="flow">
-        <div onclick="BLOCKS.render_new_block_code()" class="flow-block-start">
-            + Start
-        </div>
+    <section class="content">
+        <section class="content-blockSetup">
+
+        </section>
+        <section class="content-blockView">
+        </section>
 
     </section>
 
@@ -62,7 +44,6 @@
     <script src='./js/libs/plain-draggable.min.js'></script>
     <script src='./js/libs/leader-line.min.js'></script>
     <script src='./js/libs/ace.js'></script>
-    <script src='./js/libs/htmx.min.js'></script>
 
 </body>
 
