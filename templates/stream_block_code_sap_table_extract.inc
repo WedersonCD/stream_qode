@@ -1,6 +1,5 @@
 CONNECT TO 'SAP-ECC v1';
 
-
 YourTableName:
 SELECT
     Field1,
