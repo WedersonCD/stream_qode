@@ -71,11 +71,3 @@
     justify-content: center;
     flex:4
 }
-
-.stream-block-header-save-icon{
-    cursor: pointer;
-}
-
-.stream-block-header-delete-icon{
-    cursor: pointer;
-}
