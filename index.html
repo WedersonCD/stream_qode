@@ -1,15 +1,16 @@
 <html>
 
 <head>
-    <link rel="stylesheet" href="./css/style.css">
-    <link rel="stylesheet" href="./css/block.css">
+
     <title>Stream Qode</title>
 
 	<script src="../../resources/assets/external/requirejs/require.js"></script>
     <script src='./js/utils.js'></script>
     <script src='./js/qlik.js'></script>
     <script src='./js/block.js'></script>
-
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/block.css">
+    
 </head>
 
 <body onload="QLIK.upload_template_app_list()">
@@ -50,7 +51,11 @@
     <script src='./js/libs/plain-draggable.min.js'></script>
     <script src='./js/libs/leader-line.min.js'></script>
     <script src='./js/libs/ace.js'></script>
-
+    <script>
+        //remove Qlik CSS
+        new Promise(r => setTimeout(()=>document.querySelector("head > link:nth-child(18)").remove(), 500));
+        
+    </script>
 </body>
 
 </html>
