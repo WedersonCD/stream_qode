@@ -12,7 +12,7 @@
     width: 300px;
     margin-left: 100px;
     margin-top: 100px;
-    border-radius: 3px;
+    border-radius: 10px;
     border:#000 solid 1px;
     background-color: #f2f2ea;
 
@@ -22,8 +22,8 @@
 body {
     display: flex;
     flex-direction: column;
-    font-family: Nunito,Arial;
-    font-size: 20px;
+    font-family: Nunito,Arial!important;
+    font-size: 20px!important;
     margin: 0px;
     height: 100%;
     width: 100%;
@@ -36,11 +36,13 @@ body {
     max-height: 30px;
     display: flex;
     flex-direction: row;
-    justify-content: flex-start;
     background-color: white;
-    margin:0px;
+    margin: 0px;
     padding: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    align-content: center;
+    align-items: center;
 }
 
 .header-addBlock {
@@ -54,6 +56,13 @@ body {
     background-color: #75ed03;
     border-radius: 10px;
     margin-right: 10px;
+}
+
+.header-run {
+    background-color: #75ed03;
+    border-radius: 10px;
+    margin-left: 10px;
+    border:1px solid #000;
 }
 
 .header-logo {
@@ -113,3 +122,4 @@ body {
 .pointer{
     cursor: pointer;
 }
+

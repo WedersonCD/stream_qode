@@ -376,6 +376,18 @@ BLOCKS.create_stream_block_code = async () => {
     return block_object;
 }
 
+BLOCKS.get_full_code = ()=>{
+
+    fullCode = ''
+
+    BLOCKS.block_list.forEach((block)=>{
+        fullCode=fullCode+'//////Block Name>>>'+block.name+'\n\n\n'+block.code+'\n\n\n'
+    })
+
+    return fullCode
+
+}
+
 BLOCKS.render_new_block_code = async () => {
 
     const block_code = await BLOCKS.create_stream_block_code();

@@ -3,23 +3,22 @@
 <head>
     <link rel="stylesheet" href="./css/style.css">
     <link rel="stylesheet" href="./css/block.css">
-
     <title>Stream Qode</title>
 
+	<script src="../../resources/assets/external/requirejs/require.js"></script>
     <script src='./js/utils.js'></script>
+    <script src='./js/qlik.js'></script>
     <script src='./js/block.js'></script>
+
 </head>
 
-<body>
+<body onload="QLIK.upload_template_app_list()">
     <div class="outfocus display-none popup" onclick="UTILS.close_popup_divs()">
 
     </div>
     <div class="select-template display-none popup">
-            <ul class="select-template-list">
-
-            </ul>
+            <ul class="select-template-list"></ul>
     </div>
-
     <section class="header">
         <div class="header-addBlock">
             <button onclick="BLOCKS.render_new_block_code()" class="header-addBlock-add">+</button>
@@ -30,9 +29,12 @@
         <div class="header-appSelecion">
             <label class="header-appSelecion-label" for="header-appSelecion-select">App:</label>
             <select class="header-appSelecion-select">
-                <option value="option1">Option 1</option>
-                <option value="option2">Option 2</option>
             </select>
+        </div>
+        <div onclick="QLIK.run_code()" class="header-run">
+            <div class="header-run-icon pointer">
+                <img src="./assets/icons/run.svg" />
+            </div>
         </div>
     </section>
     <section class="content">
