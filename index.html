@@ -28,8 +28,13 @@
         </div>
         <div class="header-appSelecion">
             <label class="header-appSelecion-label" for="header-appSelecion-select">App:</label>
-            <select onchange="QLIK.set_current_app(event)" class="header-appSelecion-select">
+            <select class="header-appSelecion-select">
             </select>
+        </div>
+        <div onclick="QLIK.run_code()" class="header-run">
+            <div class="header-run-icon pointer">
+                <img src="./assets/icons/run.svg" />
+            </div>
         </div>
     </section>
     <section class="content">

@@ -1,5 +1,10 @@
 [
     {
+        "name": "Variaveis Padrao ",
+        "file": "stream_block_code_variaveis_main.inc",
+        "type": "code"
+    },
+    {
         "name": "Extract SAP Table",
         "file": "stream_block_code_sap_table_extract.inc",
         "type": "code"
@@ -7,6 +12,11 @@
     {
         "name": "Load Faturamento",
         "file": "stream_block_code_load_faturamento.inc",
+        "type": "code"
+    },
+    {
+        "name": "Inline Basico ",
+        "file": "stream_block_code_inline.inc",
         "type": "code"
     }
 ]

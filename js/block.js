@@ -380,8 +380,8 @@ BLOCKS.get_full_code = ()=>{
 
     fullCode = ''
 
-    BLOCKS.block_list.forEach((item)=>{
-        fullCode=fullCode+item.code+'\n'
+    BLOCKS.block_list.forEach((block)=>{
+        fullCode=fullCode+'//////Block Name>>>'+block.name+'\n\n\n'+block.code+'\n\n\n'
     })
 
     return fullCode

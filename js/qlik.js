@@ -16,7 +16,8 @@ const QLIK ={
         require(['js/qlik'], function(qlik) {
             resolve(qlik);
         });
-    })
+    }),
+    host: window.location.hostname
 }
 
 QLIK.get_template_app_list = async()=>{
@@ -25,12 +26,15 @@ QLIK.get_template_app_list = async()=>{
 
 }
 
+QLIK.getCurrentApp = async ()=>QLIK.qlik.then((qlik)=>qlik.openApp(QLIK.currentAppId));
+
 QLIK.upload_template_app_list_options = (option)=>{
     optionRawText='<option value="'+option.id+'">'+option.name+'</option>'
 
 
     return UTILS.text_to_html(optionRawText)
 }
+
 
 QLIK.upload_template_app_list = async()=>{
     
@@ -43,9 +47,24 @@ QLIK.upload_template_app_list = async()=>{
 
     })
 
-} 
+    QLIK.currentAppId=templateAppList[0].id
 
-QLIK.set_current_app = (event)=>{
-    var selectedOption = event.target.options[event.target.selectedIndex];
-    QLIK.currentAppId = selectedOption.value
+    appSelector.addEventListener('change',(event)=>{
+        var selectedOption = event.target.options[event.target.selectedIndex];
+        QLIK.currentAppId = selectedOption.value
+    })
+
+
+}
+
+QLIK.run_code = async()=>{
+
+    const fullCode = BLOCKS.get_full_code();
+    const currentApp = await QLIK.getCurrentApp()
+
+    await currentApp.setScript(fullCode)
+    await currentApp.doSave()
+    await currentApp.doReload()
+    await currentApp.doSave()
+
 }

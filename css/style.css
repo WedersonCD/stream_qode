@@ -36,11 +36,13 @@ body {
     max-height: 30px;
     display: flex;
     flex-direction: row;
-    justify-content: flex-start;
     background-color: white;
-    margin:0px;
+    margin: 0px;
     padding: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    align-content: center;
+    align-items: center;
 }
 
 .header-addBlock {
@@ -54,6 +56,13 @@ body {
     background-color: #75ed03;
     border-radius: 10px;
     margin-right: 10px;
+}
+
+.header-run {
+    background-color: #75ed03;
+    border-radius: 10px;
+    margin-left: 10px;
+    border:1px solid #000;
 }
 
 .header-logo {
@@ -113,3 +122,4 @@ body {
 .pointer{
     cursor: pointer;
 }
+
