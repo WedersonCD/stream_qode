@@ -67,8 +67,6 @@ QLIK.upload_template_app_list = async()=>{
         var selectedOption = event.target.options[event.target.selectedIndex];
         QLIK.currentAppId = selectedOption.value
     })
-
-
 }
 
 QLIK.run_code = async()=>{

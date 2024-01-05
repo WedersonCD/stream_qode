@@ -13,10 +13,12 @@
     <link rel="stylesheet" href="./css/style.css">
     <link rel="stylesheet" href="./css/block.css">
     
+    <script src='./js/libs/_hyperscript.min.js'></script>
+    
 </head>
 
-<body onload="QLIK.upload_template_app_list()">
-    <div class="outfocus display-none popup" onclick="UTILS.close_popup_divs()">
+<body _="on load js QLIK.upload_template_app_list() end then">
+    <div class="outfocus display-none popup" _="on click js UTILS.close_popup_divs() end then">
 
     </div>
     <div class="select-template display-none popup">
@@ -25,7 +27,7 @@
     </div>
     <section class="header">
         <div class="header-addBlock pointer">
-            <button onclick="BLOCKS.render_new_block_code()" class="header-addBlock-add pointer">+</button>
+            <button _="on click js BLOCKS.render_new_block_code() end then" class="header-addBlock-add pointer">+</button>
             ↓
         </div>
         <div class="header-logo">
@@ -38,7 +40,7 @@
         </div>
         <div  class="header-run">
             <div class="header-run-icon">
-                <img onclick="QLIK.run_code()" class="header-run-play-icon pointer" src="./assets/icons/run.svg" />
+                <img _="on click js QLIK.run_code() end then" class="header-run-play-icon pointer" src="./assets/icons/run.svg" />
                 <img class="header-run-loading-icon rotate display-none" src="./assets/icons/loading.svg" />
 
             </div>
@@ -61,10 +63,9 @@
     <script src='./js/libs/plain-draggable.min.js'></script>
     <script src='./js/libs/leader-line.min.js'></script>
     <script src='./js/libs/ace.js'></script>
-    <script src='./js/libs/_hyperscript.min.js'></script>
     <script>
         //remove Qlik CSS
-        new Promise(r => setTimeout(()=>document.querySelector("head > link:nth-child(18)").remove(), 500));
+        new Promise(r => setTimeout(()=>document.querySelector("head > link:nth-child(19)").remove(), 500));
         
     </script>
 </body>
