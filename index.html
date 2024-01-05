@@ -6,8 +6,10 @@
 
 	<script src="../../resources/assets/external/requirejs/require.js"></script>
     <script src='./js/utils.js'></script>
+
     <script src='./js/qlik.js'></script>
     <script src='./js/block.js'></script>
+    
     <link rel="stylesheet" href="./css/style.css">
     <link rel="stylesheet" href="./css/block.css">
     
@@ -49,7 +51,6 @@
     </section>
     <section class="content">
         <section class="content-blockSetup">
-
         </section>
         <section class="content-blockView">
         </section>
@@ -60,6 +61,7 @@
     <script src='./js/libs/plain-draggable.min.js'></script>
     <script src='./js/libs/leader-line.min.js'></script>
     <script src='./js/libs/ace.js'></script>
+    <script src='./js/libs/_hyperscript.min.js'></script>
     <script>
         //remove Qlik CSS
         new Promise(r => setTimeout(()=>document.querySelector("head > link:nth-child(18)").remove(), 500));
