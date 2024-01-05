@@ -17,8 +17,11 @@
     
 </head>
 
-<body _="on load js QLIK.upload_template_app_list() end then">
-    <div class="outfocus display-none popup" _="on click js UTILS.close_popup_divs() end then">
+<body _="init on load js QLIK.upload_template_app_list() end then">
+    <div class="outfocus display-none popup" _="
+        on click
+             toggle .display-none on .popup end
+        ">
 
     </div>
     <div class="select-template display-none popup">
@@ -42,13 +45,10 @@
             <div class="header-run-icon">
                 <img _="on click js QLIK.run_code() end then" class="header-run-play-icon pointer" src="./assets/icons/run.svg" />
                 <img class="header-run-loading-icon rotate display-none" src="./assets/icons/loading.svg" />
-
             </div>
         </div>
         <div _="on click js QLIK.open_app_link() end then" class="header-openApp pointer">
             <img class="header-openApp-open-icon" src="./assets/icons/open.svg" />
-            
-
         </div>
     </section>
     <section class="content">
