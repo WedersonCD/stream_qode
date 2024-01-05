@@ -5,6 +5,7 @@
     height: 100%;
     width: 100%;
 }
+
 .select-template {
     z-index: 999;
     position: absolute;
@@ -15,11 +16,24 @@
     border-radius: 10px;
     border:#000 solid 1px;
     background-color: #f2f2ea;
-
+    padding: 5px;
 }
 
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.rotate {
+    animation: rotate 2s linear infinite;
+}
 
 body {
+    
     display: flex;
     flex-direction: column;
     font-family: Nunito,Arial!important;
@@ -47,22 +61,20 @@ body {
 
 .header-addBlock {
     display: flex;
-    justify-content: center;
-    vertical-align: middle;
-    border-right: 1px #c2c2c2 solid;
+    background-color: #f2f2ea;
+    border: 1px #000 solid;
+    height: 100%;
+    border-radius: 3px;
+    width: 40px;
+    padding: 0px;
 }
 
 .header-addBlock-add {
     background-color: #75ed03;
-    border-radius: 10px;
-    margin-right: 10px;
-}
-
-.header-run {
-    background-color: #75ed03;
-    border-radius: 10px;
-    margin-left: 10px;
-    border:1px solid #000;
+    margin: 0;
+    border:none;
+    width: 27px;
+    border-right: 1px #000 solid;
 }
 
 .header-logo {
@@ -72,7 +84,6 @@ body {
     padding: 10px
 
 }
-
 
 .header-appSelecion-label {
     font-size: 18px;
@@ -91,6 +102,23 @@ body {
 
 .header-appSelecion-select:focus {
     border-color: #007bff;
+}
+
+
+.header-run {
+    display: flex;
+    width: 30;
+    height: 100%;
+    background-color: #75ed03;
+    border-radius: 3px;
+    margin-left: 10px;
+    border: 1px solid #000;
+    align-items: center;
+    justify-content: center;
+}
+
+.header-openApp {
+    margin-left: 10px;
 }
 
 .content {

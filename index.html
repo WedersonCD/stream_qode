@@ -18,11 +18,13 @@
 
     </div>
     <div class="select-template display-none popup">
+            <h4>Code Templates</h4>
             <ul class="select-template-list clean-on-close"></ul>
     </div>
     <section class="header">
-        <div class="header-addBlock">
-            <button onclick="BLOCKS.render_new_block_code()" class="header-addBlock-add">+</button>
+        <div class="header-addBlock pointer">
+            <button onclick="BLOCKS.render_new_block_code()" class="header-addBlock-add pointer">+</button>
+            ↓
         </div>
         <div class="header-logo">
             Stream Qode
@@ -32,10 +34,17 @@
             <select class="header-appSelecion-select">
             </select>
         </div>
-        <div onclick="QLIK.run_code()" class="header-run">
-            <div class="header-run-icon pointer">
-                <img src="./assets/icons/run.svg" />
+        <div  class="header-run">
+            <div class="header-run-icon">
+                <img onclick="QLIK.run_code()" class="header-run-play-icon pointer" src="./assets/icons/run.svg" />
+                <img class="header-run-loading-icon rotate display-none" src="./assets/icons/loading.svg" />
+
             </div>
+        </div>
+        <div onclick="QLIK.open_app_link()" class="header-openApp pointer">
+            <img class="header-openApp-open-icon" src="./assets/icons/open.svg" />
+            
+
         </div>
     </section>
     <section class="content">

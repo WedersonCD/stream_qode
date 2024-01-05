@@ -1,6 +1,6 @@
 [
     {
-        "name": "Variaveis Padrao ",
+        "name": "Main Variables",
         "file": "stream_block_code_variaveis_main.inc",
         "type": "code"
     },
@@ -10,13 +10,18 @@
         "type": "code"
     },
     {
-        "name": "Load Faturamento",
+        "name": "Load Sales",
         "file": "stream_block_code_load_faturamento.inc",
         "type": "code"
     },
     {
-        "name": "Inline Basico ",
+        "name": "Basic Inline",
         "file": "stream_block_code_inline.inc",
+        "type": "code"
+    },
+    {
+        "name": "STORE as Parquet",
+        "file": "stream_block_code_store_parquet.inc",
         "type": "code"
     }
 ]
