@@ -17,7 +17,7 @@
     
 </head>
 
-<body _="init on load js QLIK.upload_template_app_list() end then">
+<body>
     <div class="outfocus display-none popup" _="
         on click
              toggle .display-none on .popup end
@@ -38,7 +38,14 @@
         </div>
         <div class="header-appSelecion">
             <label class="header-appSelecion-label" for="header-appSelecion-select">App:</label>
-            <select class="header-appSelecion-select">
+            <select class="header-appSelecion-select" _="
+            init fetch ./template_apps.json as json then
+                for app in result
+                    make an <option/> then                        
+                        put app.name into it
+                        put it at end of me
+                end
+            ">
             </select>
         </div>
         <div  class="header-run">
