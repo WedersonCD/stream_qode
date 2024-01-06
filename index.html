@@ -44,7 +44,19 @@
                     make an <option/> then                        
                         put app.name into it
                         put it at end of me
+                        tell it
+                            set @app-id to app.id
                 end
+
+                tell my options[0]
+                    put @app-id into my @app-id
+                end
+            end
+            
+            on change
+                tell my options[I.selectedIndex]
+                    put @app-id into my @app-id
+            end
             ">
             </select>
         </div>
@@ -54,7 +66,11 @@
                 <img class="header-run-loading-icon rotate display-none" src="./assets/icons/loading.svg" />
             </div>
         </div>
-        <div _="on click js QLIK.open_app_link() end then" class="header-openApp pointer">
+        <div class="header-openApp pointer" _="
+            on click
+                set :currentApp to .header-appSelecion-select[app-id]
+                log  :currentApp
+                ">
             <img class="header-openApp-open-icon" src="./assets/icons/open.svg" />
         </div>
     </section>
