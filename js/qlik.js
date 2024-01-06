@@ -17,7 +17,7 @@ const QLIK ={
             resolve(qlik);
         });
     }),
-    host: window.location.protocol+'//'+window.location.host,
+    host: window.location.protocol+'//'+window.location.host
 
 }
 
@@ -28,6 +28,7 @@ QLIK.get_template_app_list = async()=>{
 }
 
 QLIK.open_app_link = ()=>{
+
     if(QLIK.host=='localhost:4848')
         extension='.qvf';
     else

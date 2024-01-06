@@ -13,8 +13,26 @@
     <link rel="stylesheet" href="./css/style.css">
     <link rel="stylesheet" href="./css/block.css">
     
-    <script src='./js/libs/_hyperscript.min.js'></script>
-    
+    <script type="text/hyperscript">
+        init 
+        repeat while no $QLIK
+            js
+                return QLIK
+            end
+            set $QLIK to it        
+            wait 0.5s
+        end
+
+        def getCurrentAppLink
+            set currentAppId to .header-appSelecion-select's @app-id
+
+            set extension to ''
+
+            make a URL from '/sense/app/'+currentAppId+extension+'/overview',$QLIK.host
+                return it.href
+        end
+
+    </script>
 </head>
 
 <body>
@@ -68,8 +86,9 @@
         </div>
         <div class="header-openApp pointer" _="
             on click
-                set :currentApp to .header-appSelecion-select[app-id]
-                log  :currentApp
+                get getCurrentAppLink() then
+                go to url `${it}` in new window
+            end
                 ">
             <img class="header-openApp-open-icon" src="./assets/icons/open.svg" />
         </div>
@@ -83,6 +102,7 @@
     </section>
 
     <!--libs-->
+    <script src='./js/libs/_hyperscript.min.js'></script>
     <script src='./js/libs/plain-draggable.min.js'></script>
     <script src='./js/libs/leader-line.min.js'></script>
     <script src='./js/libs/ace.js'></script>
