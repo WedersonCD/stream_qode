@@ -20,8 +20,14 @@
     </div>
     <div class="stream-block-code">
         <div class="stream-block-code-header">
-            <div class="stream-block-code-header-options">
-                Uma opção qualquer
+            <div class="stream-block-code-header-options" _="
+            on load 
+            fetch ./blocks/stream_block_code_options.json as json then
+            for option in  result 
+                make an <input[type='checkbox']/>
+                     put option.label into it
+                     put it into me
+            ">
             </div>
         </div>
         <div class="stream-block-code-body">
