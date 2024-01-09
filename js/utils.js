@@ -54,3 +54,8 @@ UTILS.close_outfocus_div = () => {
     outFocusDiv.classList.add('display-none')
     UTILS.clean_on_close_div()
 }
+
+UTILS.get_unic_id = () =>{
+    return Date.now().toString() + '-' + Math.random().toString(16).slice(2)
+
+}
