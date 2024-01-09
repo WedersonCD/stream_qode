@@ -21,12 +21,24 @@
     <div class="stream-block-code">
         <div class="stream-block-code-header">
             <div class="stream-block-code-header-options" _="
-            on load 
+            init
+            log 60
             fetch ./blocks/stream_block_code_options.json as json then
             for option in  result 
-                make an <input[type='checkbox']/>
-                     put option.label into it
-                     put it into me
+                make an <div.stream-block-code-header-options-option/>
+                    set inputDiv to it then
+
+                make an <label/>
+                    put option.label into it
+                    put option.label into inputDiv then
+
+                make an <input/>
+                    add @type=checkbox to it
+                    set its name to option.label 
+                    put it at end of inputDiv then
+
+                put inputDiv at the end of me
+            end
             ">
             </div>
         </div>

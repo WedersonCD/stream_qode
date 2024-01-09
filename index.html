@@ -48,7 +48,13 @@
     </div>
     <section class="header">
         <div class="header-addBlock pointer">
-            <button _="on click js BLOCKS.render_new_block_code() end then" class="header-addBlock-add pointer">+</button>
+            <button class="header-addBlock-add pointer" _="
+            on click
+                fetch ./blocks/stream_block_code_setup.html as HTML then 
+                    put the result into .content-blockSetup
+                    
+            end
+            ">+</button>
             ↓
         </div>
         <div class="header-logo">

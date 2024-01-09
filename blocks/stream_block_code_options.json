@@ -1,11 +1,11 @@
 [
     {
-        "label":"comment",
+        "label":"Comment",
         "pre_code":"/*",
         "pos_code":"//*/"
     },
     {
-        "label": "calc execution time",
+        "label": "Calc execution time",
         "pre_code": "LET "
     }
 ]
