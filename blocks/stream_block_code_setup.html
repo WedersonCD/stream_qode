@@ -22,7 +22,6 @@
         <div class="stream-block-code-header">
             <div class="stream-block-code-header-options" _="
             init
-            log 60
             fetch ./blocks/stream_block_code_options.json as json then
             for option in  result 
                 make an <div.stream-block-code-header-options-option/>
@@ -42,7 +41,12 @@
             ">
             </div>
         </div>
-        <div class="stream-block-code-body">
+        <div class="stream-block-code-body" _="
+            init js(me) return ace.edit(me) end
+                --make possible re-use the editor
+                set @id to 'editor-'+@block-id
+            end
+        ">
             //Seu código vem aqui
         </div>
     </div>

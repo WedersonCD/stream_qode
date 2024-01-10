@@ -53,6 +53,13 @@
             call setBlockIDDepply(el,blockId)
         end
 
+        def getBlockEditor(blockId)
+            js(blockId)
+                ace.edit('editor-'+blockId)
+            end then 
+            return it
+        end
+
 
     </script>
 </head>
