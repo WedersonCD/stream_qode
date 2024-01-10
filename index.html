@@ -49,8 +49,9 @@
         end
         
         def setNewBlockIDDepply(el,blockId)
-            get getUnicId() then put it into blockId    then
-            call setBlockIDDepply(el,blockId)
+            get getUnicId() then
+                put it into blockId then
+                call setBlockIDDepply(el,blockId)
         end
 
         def getBlockEditor(blockId)
@@ -79,10 +80,19 @@
         <div class="header-addBlock pointer">
             <button class="header-addBlock-add pointer" _="
             on click
-                make an <div/> then put it into mainBlockDiv
-                fetch ./blocks/stream_block_code_setup.html as Fragment then put the result into mainBlockDiv
-                call setNewBlockIDDepply(mainBlockDiv)
-                put mainBlockDiv into .content-blockSetup
+                get getUnicId() then put it into blockId
+
+                make an <div/> then put it into setupBlockDiv
+                    
+                    fetch ./blocks/stream_block_code_setup.html as Fragment then put the result into setupBlockDiv
+                    call setBlockIDDepply(setupBlockDiv,blockId)
+                    put setupBlockDiv into .content-blockSetup
+
+                make an <div/> then put it into miniatureBlockDiv
+                    fetch ./blocks/stream_block_code_miniature.html as Fragment then put the result into miniatureBlockDiv
+                    call setBlockIDDepply(miniatureBlockDiv,blockId)
+                    put miniatureBlockDiv into .content-blockView
+
             end
             ">+</button>
             ↓
