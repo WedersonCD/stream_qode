@@ -32,6 +32,28 @@
                 return it.href
         end
 
+        def getUnicId
+            js
+                return UTILS.get_unic_id()
+            end then
+            return it
+        end
+
+        def setBlockIDDepply(el,blockId)
+        
+            tell el
+                set @block-id to blockId
+        
+            tell <div/> in el
+                set @block-id to blockId
+        end
+        
+        def setNewBlockIDDepply(el,blockId)
+            get getUnicId() then put it into blockId    then
+            call setBlockIDDepply(el,blockId)
+        end
+
+
     </script>
 </head>
 
@@ -50,9 +72,10 @@
         <div class="header-addBlock pointer">
             <button class="header-addBlock-add pointer" _="
             on click
-                fetch ./blocks/stream_block_code_setup.html as HTML then 
-                    put the result into .content-blockSetup
-                    
+                make an <div/> then put it into mainBlockDiv
+                fetch ./blocks/stream_block_code_setup.html as Fragment then put the result into mainBlockDiv
+                call setNewBlockIDDepply(mainBlockDiv)
+                put mainBlockDiv into .content-blockSetup
             end
             ">+</button>
             ↓
