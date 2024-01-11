@@ -1,9 +1,18 @@
-<div class="stream-block-code-miniature" _="init
- js(me)
-    new PlainDraggable(me)
+<div class="stream-block-code-miniature" _="
+init
+    js(me)
+       new PlainDraggable(me)
+    end
+ end
+ 
+ on click
+    call selectBlock(@block-id)
  end
 ">
-    <div class="stream-block-code-miniature-label">
+    <div class="stream-block-code-miniature-label block-name-handle" _="
+    on name_change 
+        put detail's newName into .stream-block-code-miniature-label-value in me
+    ">
         <label class="stream-block-code-miniature-label-value">New Block Code</label>
     </div>
     <div class="stream-block-code-miniature-body">

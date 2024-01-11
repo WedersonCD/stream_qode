@@ -74,6 +74,16 @@
 
         end
 
+        def selectBlock(blockId)
+
+            add .display-none to .stream-block
+            get getElementByClassAndAttribute('.stream-block','block-id',blockId) then 
+                remove .display-none from it
+
+            remove .selected from .stream-block-code-miniature
+            get getElementByClassAndAttribute('.stream-block-code-miniature','block-id',blockId) then 
+                add .selected to it
+        end
 
     </script>
 </head>
@@ -119,13 +129,14 @@
                 make an <div/> then put it into setupBlockDiv
                     fetch ./blocks/stream_block_code_setup.html as Fragment then put the result into setupBlockDiv
                     call setBlockIDDepply(setupBlockDiv,blockId)
-                    put setupBlockDiv at the end of .content-blockSetup
+                    put .stream-block in setupBlockDiv at the end of .content-blockSetup
 
                 make an <div/> then put it into miniatureBlockDiv
                     fetch ./blocks/stream_block_code_miniature.html as Fragment then put the result into miniatureBlockDiv
                     call setBlockIDDepply(miniatureBlockDiv,blockId)
-                    put miniatureBlockDiv into .content-blockView
+                    put .stream-block-code-miniature in miniatureBlockDiv at the end of .content-blockView
 
+                call selectBlock(blockId)
             end
             ">+</button>
             ↓
