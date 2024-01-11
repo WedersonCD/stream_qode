@@ -56,9 +56,22 @@
 
         def getBlockEditor(blockId)
             js(blockId)
-                ace.edit('editor-'+blockId)
+                return ace.edit('editor-'+blockId)
             end then 
             return it
+        end
+
+        def getElementByClassAndAttribute(c,attribute,value)
+            js(c,attribute,value)
+                return document.body.querySelector(c+"["+attribute+"='"+value+"']")
+            end then
+            return it
+        end
+
+        def removeBlock(blockId)
+            get getElementByClassAndAttribute('.stream-block','block-id',blockId) then remove it
+            get getElementByClassAndAttribute('.stream-block-code-miniature','block-id',blockId) then remove it
+
         end
 
 
@@ -72,9 +85,30 @@
         ">
 
     </div>
-    <div class="select-template display-none popup">
+    <div class="select-template display-none popup" _="
+    init 
+        fetch ./template_files.json as Object put result into templates
+        for template in templates
+            make an <li.select-template-list-item.pointer/>
+                put template.name into it
+                tell it
+                    set @file to template.file
+
+                put it at the end of .select-template-list
+        end
+
+    end
+    ">
             <h4>Code Templates</h4>
-            <ul class="select-template-list clean-on-close"></ul>
+            <ul class="select-template-list clean-on-close" _="
+            on click 
+                set fileName to target's @file
+                set blockId to first .select-template's @block-id
+                get getBlockEditor(blockId) then put it into editor
+                fetch `./templates/${fileName}` put result into code
+                editor.setValue(code) then             
+                toggle .display-none on .popup
+            end"></ul>
     </div>
     <section class="header">
         <div class="header-addBlock pointer">
@@ -85,7 +119,7 @@
                 make an <div/> then put it into setupBlockDiv
                     fetch ./blocks/stream_block_code_setup.html as Fragment then put the result into setupBlockDiv
                     call setBlockIDDepply(setupBlockDiv,blockId)
-                    put setupBlockDiv into .content-blockSetup
+                    put setupBlockDiv at the end of .content-blockSetup
 
                 make an <div/> then put it into miniatureBlockDiv
                     fetch ./blocks/stream_block_code_miniature.html as Fragment then put the result into miniatureBlockDiv

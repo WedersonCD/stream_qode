@@ -1,4 +1,4 @@
-<div class="stream-block">
+<div class="stream-block" _="on remove_block log 32">
     <div class="stream-block-header">
         <div class="stream-block-header-name">
             <div class="stream-block-header-name-label">
@@ -7,13 +7,21 @@
             <div class="stream-block-header-name-icon pointer">
                 <img src="./assets/icons/edit.svg" />
             </div>
-            <div class="stream-block-header-delete-icon pointer">
+            <div class="stream-block-header-delete-icon pointer" _="
+            on click call removeBlock(@block-id) end
+            ">
                 <img src="./assets/icons/delete.svg" />
             </div>
             <div class="stream-block-header-save-icon pointer">
                 <img src="./assets/icons/save.svg" />
             </div>
-            <div class="stream-block-header-template_load-icon pointer">
+            <div class="stream-block-header-template_load-icon pointer" _="
+                on click
+                    remove .display-none from .popup
+                    tell .select-template
+                        set @block-id to my @block-id
+                end
+            ">
                 <img src="./assets/icons/template_load.svg" />
             </div>
         </div>

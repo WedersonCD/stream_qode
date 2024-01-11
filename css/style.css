@@ -109,7 +109,7 @@ body {
     display: flex;
     width: 30;
     height: 100%;
-    background-color: #75ed03;
+    background-color: rgb(117, 237, 3);
     border-radius: 3px;
     margin-left: 10px;
     border: 1px solid #000;
@@ -150,4 +150,3 @@ body {
 .pointer{
     cursor: pointer;
 }
-
