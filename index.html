@@ -92,6 +92,45 @@
                 add .selected to it
         end
 
+        def getOptionObject(option)
+            set optionName to option's name
+            fetch './blocks/stream_block_code_options.json' as Object then put the result into options
+            return options.filter( \ item -> item.label == optionName)
+        end
+
+        def getBlockCode(block,blockId)
+            set blockId to block's @block-id  
+            get getBlockEditor(blockId) then put it into blockEditor
+            set checkedOptions to <:checked/> in block
+            
+            set code to blockEditor.getValue()
+            set preCode to ''
+            set posCode to ''
+            for checkedOption in checkedOptions
+                
+                get getOptionObject(checkedOption) then put it into option
+                if option.pre_code then set preCode to preCode+'\n'+ option.pre_code end
+                if option.pos_code then set posCode to posCode+'\n'+ option.pos_code end
+
+            end
+            
+            return preCode+'\n'+code+'\n'+posCode
+
+        end
+
+        def getFullCode
+            set codeBlocks to .stream-block
+            set fullCode to ''
+            for codeBlock in codeBlocks
+                set blockId to codeBlock's @block-id
+                set codeBlockName to .stream-block-header-name-label-value in codeBlock
+                get getBlockCode(codeBlock) then put it into code
+                set code to '\n///$tab '+codeBlockName's textContent+'\n\n' + code +'\n'
+                set fullCode to fullCode+code
+            end
+            return fullCode
+        end
+
     </script>
 </head>
 
@@ -176,8 +215,30 @@
             </select>
         </div>
         <div  class="header-run">
-            <div class="header-run-icon">
-                <img _="on click js QLIK.run_code() end then" class="header-run-play-icon pointer" src="./assets/icons/run.svg" />
+            <div class="header-run-icon" _="
+            on click
+                add .display-none to .header-run-play-icon
+                remove .display-none from .header-run-loading-icon
+
+                log 'getting the full code...'
+                get getFullCode() put it into fullCode
+                log 'getting opening current app...'
+                set currentAppId to .header-appSelecion-select's @app-id
+                set currentApp to $QLIK.qlik.openApp(currentAppId[0])
+                log 'getting setting code app...'
+                call currentApp.setScript(fullCode)
+                call currentApp.doSave()
+                log 'reloading app...'
+                call currentApp.doReload()
+                log 'finished!!'
+
+                add .display-none to .header-run-loading-icon
+                remove .display-none from .header-run-play-icon
+
+                
+
+            end">
+                <img class="header-run-play-icon pointer" src="./assets/icons/run.svg" />
                 <img class="header-run-loading-icon rotate display-none" src="./assets/icons/loading.svg" />
             </div>
         </div>

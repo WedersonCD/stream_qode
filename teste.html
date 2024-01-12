@@ -1,67 +1,61 @@
-<html>
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <script src='./js/utils.js'></script>
-    <script src='./js/block.js'></script>
-    <script type="text/hyperscript">
-        def recursivity(el)
-            set childrens to <div/> in el
-            tell childrens
-                set @block-id to '232323'
-
-        end
-    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Code Template</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        /* Custom styles for the placeholder images */
+        .template-img {
+            background: url('https://placehold.co/50x50/e2e8f0/e2e8f0') center/cover;
+        }
+    </style>
 </head>
-
-<body>
-    <div class="stream-block" _="init call recursivity(me)">
-        <div class="stream-block-header">
-            <div class="stream-block-header-name">
-                <div class="stream-block-header-name-label">
-                    <label class="stream-block-header-name-label-value" contenteditable="true">New Block Code</label>
-                </div>
-                <div class="stream-block-header-name-icon pointer">
-                    <img src="./assets/icons/edit.svg" />
-                </div>
-                <div class="stream-block-header-delete-icon pointer">
-                    <img src="./assets/icons/delete.svg" />
-                </div>
-                <div class="stream-block-header-save-icon pointer">
-                    <img src="./assets/icons/save.svg" />
-                </div>
-                <div class="stream-block-header-template_load-icon pointer">
-                    <img src="./assets/icons/template_load.svg" />
-                </div>
-            </div>
+<body class="bg-[#A7BCC7]">
+    <div class="max-w-sm mx-auto my-8">
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between p-4 rounded-t-lg bg-white">
+            <button class="text-gray-400">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <span class="text-sm font-semibold">Select Code Template</span>
+            <button class="text-red-400">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
-        <div class="stream-block-code">
-            <div class="stream-block-code-header">
-                <div class="stream-block-code-header-options" _="
-                    init
-                    log 60
-                    fetch ./blocks/stream_block_code_options.json as json then
-                    for option in  result 
-                        make an <div.stream-block-code-header-options-option/>
-                            set inputDiv to it then
-        
-                        make an <label/>
-                            put option.label into it
-                            put option.label into inputDiv then
-        
-                        make an <input/>
-                            add @type=checkbox to it
-                            set its name to option.label 
-                            put it at end of inputDiv then
-        
-                        put inputDiv at the end of me
-                    end
-                    ">
-                </div>
+
+        <!-- Template Grid -->
+        <div class="grid grid-cols-3 gap-3 p-3 bg-white">
+            <!-- Template Card -->
+            <div class="flex flex-col items-center p-2 bg-[#F3F4F6] rounded-lg">
+                <div class="template-img w-full h-12 mb-2 rounded"></div>
+                <span class="text-xs text-center">Ccrdd</span>
+                <button class="mt-2 text-green-500">
+                    <i class="fas fa-check"></i>
+                </button>
             </div>
-            <div class="stream-block-code-body">
-                //Seu código vem aqui
+            <!-- Repeated for each template -->
+            <!-- ... other template cards ... -->
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="flex items-center justify-between p-4 rounded-b-lg bg-white">
+            <button class="text-gray-400">
+                <i class="fas fa-chevron-left"></i>
+                <span class="ml-1 text-xs">Cancel</span>
+            </button>
+            <div class="flex space-x-1">
+                <!-- Pagination Dots -->
+                <span class="w-2 h-2 bg-gray-400 rounded-full"></span>
+                <!-- ... other dots ... -->
             </div>
+            <button class="text-blue-600">
+                <span class="text-xs">Select</span>
+                <i class="fas fa-chevron-right ml-1"></i>
+            </button>
         </div>
     </div>
-    <script src='./js/libs/_hyperscript.min.js'></script>
 </body>
+</html>
