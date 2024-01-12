@@ -40,15 +40,18 @@
                 for option in  result 
                     make an <div.stream-block-code-header-options-option/>
                         set inputDiv to it then
-
-                    make an <label/>
-                        put option.label into it
-                        put option.label into inputDiv then
-
+                    
                     make an <input/>
                         add @type=checkbox to it
                         set its name to option.label 
+                        set its id to  @block-id+'-'+option.label
                         put it at end of inputDiv then
+
+                    make an <label/>
+                        put option.label into it
+                        put it at end of inputDiv
+                        tell it
+                            set @for to my @block-id+'-'+option.label then
 
                     put inputDiv at the end of me
                 end
