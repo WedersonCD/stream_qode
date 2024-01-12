@@ -31,6 +31,13 @@
             make a URL from '/sense/app/'+currentAppId+extension+'/overview',$QLIK.host
                 return it.href
         end
+        
+        def createAnLine(leftBlock,rightBlock)
+            js(leftBlock,rightBlock)
+                return new LeaderLine(leftBlock,rightBlock)
+            end then
+            return it
+        end
 
         def getUnicId
             js
@@ -70,8 +77,8 @@
 
         def removeBlock(blockId)
             get getElementByClassAndAttribute('.stream-block','block-id',blockId) then remove it
-            get getElementByClassAndAttribute('.stream-block-code-miniature','block-id',blockId) then remove it
 
+            send remove to <div.stream-block-code-miniature[block-id='${blockId}']/>
         end
 
         def selectBlock(blockId)

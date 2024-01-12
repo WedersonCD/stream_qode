@@ -2,13 +2,9 @@
     <div class="stream-block-header">
         <div class="stream-block-header-name">
             <div class="stream-block-header-name-label block-name-handle" _="
-                on input from .stream-block-header-name-label-value in me
-                    for blockNameHandle in .block-name-handle
-                        if blockNameHandle's @block-id is my @block-id
-                            send name_change(newName:target.textContent) to blockNameHandle 
-                        end
-                     end
-                end
+            on input from .stream-block-header-name-label-value in me
+                send name_change(newName:target.textContent) to <div.block-name-handle[block-id='${my @block-id}']/>
+            end
             ">
                 <label class="stream-block-header-name-label-value" contenteditable="true" >New Block Code</label>
             </div>
