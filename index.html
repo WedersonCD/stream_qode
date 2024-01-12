@@ -161,7 +161,7 @@
                 set fileName to target's @file
                 set blockId to first .select-template's @block-id
                 get getBlockEditor(blockId) then put it into editor
-                fetch `./templates/${fileName}` put result into code
+                fetch `./code_templates/${fileName}` put result into code
                 editor.setValue(code) then             
                 toggle .display-none on .popup
             end"></ul>
