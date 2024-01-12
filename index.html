@@ -1,45 +1,100 @@
 <html>
 
 <head>
-    <link rel="stylesheet" href="./css/style.css">
-    <link rel="stylesheet" href="./css/block.css">
+
     <title>Stream Qode</title>
 
 	<script src="../../resources/assets/external/requirejs/require.js"></script>
     <script src='./js/utils.js'></script>
+
     <script src='./js/qlik.js'></script>
     <script src='./js/block.js'></script>
+    
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/block.css">
+    
+    <script type="text/hyperscript">
+        init 
+        repeat while no $QLIK
+            js
+                return QLIK
+            end
+            set $QLIK to it        
+            wait 0.5s
+        end
 
+        def getCurrentAppLink
+            set currentAppId to .header-appSelecion-select's @app-id
+
+            set extension to ''
+
+            make a URL from '/sense/app/'+currentAppId+extension+'/overview',$QLIK.host
+                return it.href
+        end
+
+    </script>
 </head>
 
-<body onload="QLIK.upload_template_app_list()">
-    <div class="outfocus display-none popup" onclick="UTILS.close_popup_divs()">
+<body>
+    <div class="outfocus display-none popup" _="
+        on click
+             toggle .display-none on .popup end
+        ">
 
     </div>
     <div class="select-template display-none popup">
-            <ul class="select-template-list"></ul>
+            <h4>Code Templates</h4>
+            <ul class="select-template-list clean-on-close"></ul>
     </div>
     <section class="header">
-        <div class="header-addBlock">
-            <button onclick="BLOCKS.render_new_block_code()" class="header-addBlock-add">+</button>
+        <div class="header-addBlock pointer">
+            <button _="on click js BLOCKS.render_new_block_code() end then" class="header-addBlock-add pointer">+</button>
+            ↓
         </div>
         <div class="header-logo">
             Stream Qode
         </div>
         <div class="header-appSelecion">
             <label class="header-appSelecion-label" for="header-appSelecion-select">App:</label>
-            <select class="header-appSelecion-select">
+            <select class="header-appSelecion-select" _="
+            init fetch ./template_apps.json as json then
+                for app in result
+                    make an <option/> then                        
+                        put app.name into it
+                        put it at end of me
+                        tell it
+                            set @app-id to app.id
+                end
+
+                tell my options[0]
+                    put @app-id into my @app-id
+                end
+            end
+            
+            on change
+                tell my options[I.selectedIndex]
+                    put @app-id into my @app-id
+            end
+            ">
             </select>
         </div>
-        <div onclick="QLIK.run_code()" class="header-run">
-            <div class="header-run-icon pointer">
-                <img src="./assets/icons/run.svg" />
+        <div  class="header-run">
+            <div class="header-run-icon">
+                <img _="on click js QLIK.run_code() end then" class="header-run-play-icon pointer" src="./assets/icons/run.svg" />
+                <img class="header-run-loading-icon rotate display-none" src="./assets/icons/loading.svg" />
             </div>
+        </div>
+        <div class="header-openApp pointer" _="
+            on click
+                get getCurrentAppLink() then
+                go to url `${it}` in new window
+            end
+                ">
+            <img class="header-openApp-open-icon" src="./assets/icons/open.svg" />
         </div>
     </section>
     <section class="content">
         <section class="content-blockSetup">
-
         </section>
         <section class="content-blockView">
         </section>
@@ -47,10 +102,15 @@
     </section>
 
     <!--libs-->
+    <script src='./js/libs/_hyperscript.min.js'></script>
     <script src='./js/libs/plain-draggable.min.js'></script>
     <script src='./js/libs/leader-line.min.js'></script>
     <script src='./js/libs/ace.js'></script>
-
+    <script>
+        //remove Qlik CSS
+        new Promise(r => setTimeout(()=>document.querySelector("head > link:nth-child(19)").remove(), 500));
+        
+    </script>
 </body>
 
 </html>

@@ -331,8 +331,7 @@ BLOCKS.open_template_selector_get_li = (blockId,templateObject)=>{
         UTILS.close_popup_divs()
         
         //clean the UL
-        const templateSelectList = document.querySelector('.select-template-list')
-        templateSelectList.innerHTML='';
+
     })
 
     return liItemHTML
@@ -354,6 +353,12 @@ BLOCKS.open_template_selector= async (blockId)=>{
         templateSelectList.appendChild(liItem)
     
     })
+
+    templateSelectList.addEventListener('click',(event)=>{
+        templateSelectList.innerHTML='';
+    })
+
+    
 
 }
 

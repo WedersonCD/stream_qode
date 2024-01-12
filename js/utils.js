@@ -43,8 +43,14 @@ UTILS.open_outfocus_div = () => {
 
 }
 
+UTILS.clean_on_close_div = ()=>{
+    outFocusDiv = document.getElementsByClassName('clean-on-close')[0]
+    outFocusDiv.innerHTML=''
+}
+
 UTILS.close_outfocus_div = () => {
 
     outFocusDiv = document.getElementsByClassName('outfocus')[0]
     outFocusDiv.classList.add('display-none')
+    UTILS.clean_on_close_div()
 }
