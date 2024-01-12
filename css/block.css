@@ -27,6 +27,16 @@
     justify-content: flex-start;
     background-color: white;
     padding: 10px;
+    height: 15px;
+    border-bottom: 1px solid #000;
+
+}
+.stream-block-code-header-options-option {
+    display: flex;
+    height: 12px;
+    vertical-align: middle;
+    align-items: center;
+
 }
 
 .stream-block-code{

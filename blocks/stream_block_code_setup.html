@@ -1,19 +1,33 @@
-<div class="stream-block">
+<div class="stream-block" >
     <div class="stream-block-header">
         <div class="stream-block-header-name">
-            <div class="stream-block-header-name-label">
+            <div class="stream-block-header-name-label block-name-handle" _="
+            on input from .stream-block-header-name-label-value in me
+                send name_change(newName:target.textContent) to <div.block-name-handle[block-id='${my @block-id}']/>
+                tell .stream-block-header-name-label-value in me
+                    set your @block-id to my @block-id
+            end
+            ">
                 <label class="stream-block-header-name-label-value" contenteditable="true" >New Block Code</label>
             </div>
             <div class="stream-block-header-name-icon pointer">
                 <img src="./assets/icons/edit.svg" />
             </div>
-            <div class="stream-block-header-delete-icon pointer">
+            <div class="stream-block-header-delete-icon pointer" _="
+            on click call removeBlock(@block-id) end
+            ">
                 <img src="./assets/icons/delete.svg" />
             </div>
             <div class="stream-block-header-save-icon pointer">
                 <img src="./assets/icons/save.svg" />
             </div>
-            <div class="stream-block-header-template_load-icon pointer">
+            <div class="stream-block-header-template_load-icon pointer" _="
+                on click
+                    remove .display-none from .popup
+                    tell .select-template
+                        set @block-id to my @block-id
+                end
+            ">
                 <img src="./assets/icons/template_load.svg" />
             </div>
         </div>
@@ -21,16 +35,32 @@
     <div class="stream-block-code">
         <div class="stream-block-code-header">
             <div class="stream-block-code-header-options" _="
-            on load 
-            fetch ./blocks/stream_block_code_options.json as json then
-            for option in  result 
-                make an <input[type='checkbox']/>
-                     put option.label into it
-                     put it into me
+            init
+                fetch ./blocks/stream_block_code_options.json as json then
+                for option in  result 
+                    make an <div.stream-block-code-header-options-option/>
+                        set inputDiv to it then
+
+                    make an <label/>
+                        put option.label into it
+                        put option.label into inputDiv then
+
+                    make an <input/>
+                        add @type=checkbox to it
+                        set its name to option.label 
+                        put it at end of inputDiv then
+
+                    put inputDiv at the end of me
+                end
+            end
             ">
             </div>
         </div>
-        <div class="stream-block-code-body">
+        <div class="stream-block-code-body" _="
+            init js(me) return ace.edit(me) end put it into element editor
+                set @id to 'editor-'+@block-id
+            end
+        ">
             //Seu código vem aqui
         </div>
     </div>

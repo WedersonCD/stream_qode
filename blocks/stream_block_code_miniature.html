@@ -1,5 +1,62 @@
-<div class="stream-block-code-miniature">
-    <div class="stream-block-code-miniature-label">
+<div class="stream-block-code-miniature" _="
+    init
+        js(me)
+           new PlainDraggable(me)
+        end then
+
+        set leftBlock to previous .stream-block-code-miniature
+
+        if leftBlock then
+            get call createAnLine(leftBlock,me) then
+            set element leftLine to it
+
+            send change_right_line(line:leftLine) to leftBlock
+        end
+
+    end
+
+    on remove 
+        set leftBlock   to previous .stream-block-code-miniature
+        set rightBlock  to next .stream-block-code-miniature
+
+        if rightBlock  and leftBlock then
+
+            get createAnLine(leftBlock,rightBlock) then put it into newLine
+
+            send change_right_line(line:newLine) to leftBlock 
+            send change_left_line(line:newLine) to rightBlock 
+        else
+            if rightBlock then send change_left_line(line:null) to rightBlock end
+            if leftBlock then send change_right_line(line:null) to leftBlock end
+        end
+
+        remove me
+    end 
+
+    on change_right_line
+        if rightLine then rightLine.remove() end
+        set element rightLine to detail's line 
+    end
+
+    on change_left_line
+        
+        if leftLine then leftLine.remove()   end
+        set element leftLine to detail's line 
+    end
+
+    on mousemove or change_left_line or change_right_line
+        if rightLine then rightLine.position() end
+        if leftLine  then leftLine.position()  end
+    end 
+
+    on click
+        call selectBlock(@block-id)
+    end
+">
+    <div class="stream-block-code-miniature-label block-name-handle" _="
+    on name_change 
+        put detail's newName into .stream-block-code-miniature-label-value in me
+    ">
         <label class="stream-block-code-miniature-label-value">New Block Code</label>
     </div>
     <div class="stream-block-code-miniature-body">

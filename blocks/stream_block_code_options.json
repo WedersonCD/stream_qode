@@ -1,11 +1,12 @@
 [
     {
-        "label":"comment",
+        "label":"Comment",
         "pre_code":"/*",
         "pos_code":"//*/"
     },
     {
-        "label": "calc execution time",
-        "pre_code": "LET "
+        "label": "Calc execution time",
+        "pre_code": "LET StreamQode_CalcExecutionTime_Start = NOW();",
+        "pos_code": "LET StreamQode_CalcExecutionTime_End = NOW();\n\n LET StreamQode_CalcExecutionTime_Duration = Interval(StreamQode_CalcExecutionTime_End - StreamQode_CalcExecutionTime_Start);\n\nTRACE >>>>>$(StreamQode_CalcExecutionTime_Duration);"
     }
 ]
