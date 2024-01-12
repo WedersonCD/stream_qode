@@ -1,61 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Select Code Template</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
-        /* Custom styles for the placeholder images */
-        .template-img {
-            background: url('https://placehold.co/50x50/e2e8f0/e2e8f0') center/cover;
+        .select-template {
+            z-index: 999;
+            position: absolute;
+            height: 300px;
+            width: 300px;
+            margin-left: 100px;
+            margin-top: 100px;
+            border-radius: 10px;
+            border: #000 solid 1px;
+            background-color: #f2f2ea;
+            display: flex;
+            flex-direction: column;
+            padding: 5px;
         }
+
+        .select-template-searchBar{
+            flex-direction: row;
+            display: flex;
+            justify-content: center;
+            margin-top:-5px;
+            height: 30px;
+            width: 100%;
+        }
+
+        .select-template-title {
+            justify-content: center;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .select-template-searchBar-search{
+            border:1px #000 solid;
+            width: 100%;
+
+        }
+
+        .select-template-templates{
+            height: 100%;
+            margin-top:5px;
+            padding: 5px;
+            display: flex;
+            flex-direction: row;
+            overflow-y: scroll;
+            flex-flow: wrap;
+
+        }
+
+        .select-template-templates-template {
+            margin:5px;
+            height: 110px;
+            width: 110px;
+            background-color: white;
+            text-align: center;
+            padding:5px;
+            overflow: hidden;
+        }
+
     </style>
 </head>
-<body class="bg-[#A7BCC7]">
-    <div class="max-w-sm mx-auto my-8">
-        <!-- Modal Header -->
-        <div class="flex items-center justify-between p-4 rounded-t-lg bg-white">
-            <button class="text-gray-400">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-            <span class="text-sm font-semibold">Select Code Template</span>
-            <button class="text-red-400">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
 
-        <!-- Template Grid -->
-        <div class="grid grid-cols-3 gap-3 p-3 bg-white">
-            <!-- Template Card -->
-            <div class="flex flex-col items-center p-2 bg-[#F3F4F6] rounded-lg">
-                <div class="template-img w-full h-12 mb-2 rounded"></div>
-                <span class="text-xs text-center">Ccrdd</span>
-                <button class="mt-2 text-green-500">
-                    <i class="fas fa-check"></i>
-                </button>
-            </div>
-            <!-- Repeated for each template -->
-            <!-- ... other template cards ... -->
+<body>
+    <div class="select-template">
+        <div class="select-template-title">
+            Select Code Template
         </div>
-
-        <!-- Modal Footer -->
-        <div class="flex items-center justify-between p-4 rounded-b-lg bg-white">
-            <button class="text-gray-400">
-                <i class="fas fa-chevron-left"></i>
-                <span class="ml-1 text-xs">Cancel</span>
-            </button>
-            <div class="flex space-x-1">
-                <!-- Pagination Dots -->
-                <span class="w-2 h-2 bg-gray-400 rounded-full"></span>
-                <!-- ... other dots ... -->
+        <div class="select-template-searchBar">
+            <input class="select-template-searchBar-search" type="text"/>
+        </div>
+        <div class="select-template-templates">
+            <div class="select-template-templates-template">
+                Nome curto
             </div>
-            <button class="text-blue-600">
-                <span class="text-xs">Select</span>
-                <i class="fas fa-chevron-right ml-1"></i>
-            </button>
+            <div class="select-template-templates-template">
+                Nome curto
+            </div>
+            <div class="select-template-templates-template">
+                Nome curtoNome curtoNome curto
+            </div>
+            <div class="select-template-templates-template">
+                
+            </div>
+            <div class="select-template-templates-template">
+                
+            </div>
+            <div class="select-template-templates-template">
+                
+            </div>
+            <div class="select-template-templates-template">
+                
+            </div>
         </div>
     </div>
 </body>
+
 </html>

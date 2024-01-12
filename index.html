@@ -141,30 +141,50 @@
         ">
 
     </div>
-    <div class="select-template display-none popup" _="
+
+    <div class="select-template popup display-none" _="
     init 
         fetch ./template_files.json as Object put result into templates
         for template in templates
-            make an <li.select-template-list-item.pointer/>
+            make an <div.select-template-templates-template.pointer/>
                 put template.name into it
                 tell it
                     set @file to template.file
 
-                put it at the end of .select-template-list
+                put it at the end of .select-template-templates
         end
-
     end
+
     ">
-            <h4>Code Templates</h4>
-            <ul class="select-template-list clean-on-close" _="
-            on click 
+        <div class="select-template-title">
+            Select Code Template
+        </div>
+        <div class="select-template-searchBar">
+            <input class="select-template-searchBar-search" type="text" _="
+            on keyup
+                if the event's key is 'Escape'
+                    set my value to ''
+                    trigger keyup
+                else
+                    show .select-template-templates-template when its textContent.toLowerCase() contains my value.toLowerCase()
+                end
+            end
+            
+            "/>
+        </div>
+        <div class="select-template-templates" _="
+        on click
+            if target is not me then
                 set fileName to target's @file
                 set blockId to first .select-template's @block-id
                 get getBlockEditor(blockId) then put it into editor
-                fetch `./templates/${fileName}` put result into code
+                fetch `./code_templates/${fileName}` put result into code
                 editor.setValue(code) then             
                 toggle .display-none on .popup
-            end"></ul>
+            end
+        end
+    ">
+        </div>
     </div>
     <section class="header">
         <div class="header-addBlock pointer">
@@ -266,7 +286,7 @@
     <script src='./js/libs/ace.js'></script>
     <script>
         //remove Qlik CSS
-        new Promise(r => setTimeout(()=>document.querySelector("head > link:nth-child(19)").remove(), 500));
+        new Promise(r => setTimeout(()=>document.querySelector("head > link:nth-child(18)").remove(), 500));
         
     </script>
 </body>
