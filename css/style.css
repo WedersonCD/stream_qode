@@ -187,8 +187,10 @@ body {
     padding:5px;
     overflow: hidden;
     border-radius: 5px;
+    border: 1px solid #000;
+
 }
 
 .select-template-templates-template:hover {
-    border: 2px solid rgb(117, 237, 3);
+    border: 1px solid rgb(117, 237, 3);
 }

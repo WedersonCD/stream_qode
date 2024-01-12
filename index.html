@@ -160,7 +160,17 @@
             Select Code Template
         </div>
         <div class="select-template-searchBar">
-            <input class="select-template-searchBar-search" type="text"/>
+            <input class="select-template-searchBar-search" type="text" _="
+            on keyup
+                if the event's key is 'Escape'
+                    set my value to ''
+                    trigger keyup
+                else
+                    show .select-template-templates-template when its textContent.toLowerCase() contains my value.toLowerCase()
+                end
+            end
+            
+            "/>
         </div>
         <div class="select-template-templates" _="
         on click
