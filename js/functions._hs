@@ -1,0 +1,107 @@
+def getCurrentAppLink
+    set currentAppId to .header-appSelecion-select's @app-id
+
+    set extension to ''
+
+    make a URL from '/sense/app/'+currentAppId+extension+'/overview',$QLIK.host
+        return it.href
+end
+
+def createAnLine(leftBlock,rightBlock)
+    js(leftBlock,rightBlock)
+        return new LeaderLine(leftBlock,rightBlock)
+    end then
+    return it
+end
+
+def getUnicId
+    js
+        return UTILS.get_unic_id()
+    end then
+    return it
+end
+
+def setBlockIDDepply(el,blockId)
+
+    tell el
+        set @block-id to blockId
+
+    tell <div/> in el
+        set @block-id to blockId
+end
+
+def setNewBlockIDDepply(el,blockId)
+    get getUnicId() then
+        put it into blockId then
+        call setBlockIDDepply(el,blockId)
+end
+
+def getBlockEditor(blockId)
+    js(blockId)
+        return ace.edit('editor-'+blockId)
+    end then 
+    return it
+end
+
+def getElementByClassAndAttribute(c,attribute,value)
+    js(c,attribute,value)
+        return document.body.querySelector(c+"["+attribute+"='"+value+"']")
+    end then
+    return it
+end
+
+def removeBlock(blockId)
+    get getElementByClassAndAttribute('.stream-block','block-id',blockId) then remove it
+
+    send remove to <div.stream-block-code-miniature[block-id='${blockId}']/>
+end
+
+def selectBlock(blockId)
+
+    add .display-none to .stream-block
+    get getElementByClassAndAttribute('.stream-block','block-id',blockId) then 
+        remove .display-none from it
+
+    remove .selected from .stream-block-code-miniature
+    get getElementByClassAndAttribute('.stream-block-code-miniature','block-id',blockId) then 
+        add .selected to it
+end
+
+def getOptionObject(option)
+    set optionName to option's name
+    fetch './blocks/stream_block_code_options.json' as Object then put the result into options
+    return options.filter( \ item -> item.label == optionName)
+end
+
+def getBlockCode(block,blockId)
+    set blockId to block's @block-id  
+    get getBlockEditor(blockId) then put it into blockEditor
+    set checkedOptions to <:checked/> in block
+    
+    set code to blockEditor.getValue()
+    set preCode to ''
+    set posCode to ''
+    for checkedOption in checkedOptions
+        
+        get getOptionObject(checkedOption) then put it into option
+        if option.pre_code then set preCode to preCode+'\n'+ option.pre_code end
+        if option.pos_code then set posCode to posCode+'\n'+ option.pos_code end
+
+    end
+    
+    return preCode+'\n'+code+'\n'+posCode
+
+end
+
+def getFullCode
+    set codeBlocks to .stream-block
+    set fullCode to ''
+    for codeBlock in codeBlocks
+        set blockId to codeBlock's @block-id
+        set codeBlockName to .stream-block-header-name-label-value in codeBlock
+        get getBlockCode(codeBlock) then put it into code
+        set code to '\n///$tab '+codeBlockName's textContent+'\n\n' + code +'\n'
+        set fullCode to fullCode+code
+    end
+    return fullCode
+end

@@ -1,0 +1,8 @@
+init
+
+set global STREAM_QODE_OBJECT to {}
+get getUnicId() then 
+    set STREAM_QODE_OBJECT's id to it
+    set STREAM_QODE_OBJECT's createAt to Date.now() 
+
+end
