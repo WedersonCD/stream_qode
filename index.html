@@ -90,6 +90,8 @@
                     call setBlockIDDepply(miniatureBlockDiv,blockId)
                     put .stream-block-code-miniature in miniatureBlockDiv at the end of .content-blockView
 
+                call streamQode.addCodeBlock(setupBlockDiv)
+                
                 call selectBlock(blockId)
             end
             ">+</button>
@@ -142,9 +144,6 @@
 
                 add .display-none to .header-run-loading-icon
                 remove .display-none from .header-run-play-icon
-
-                
-
             end">
                 <img class="header-run-play-icon pointer" src="./assets/icons/run.svg" />
                 <img class="header-run-loading-icon rotate display-none" src="./assets/icons/loading.svg" />

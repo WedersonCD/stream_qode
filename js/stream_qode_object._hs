@@ -1,12 +1,8 @@
 init
-    get streamQode.loadFromLocalStorage() then
-        set  global streamQodeObject to it
-    
-    if not streamQodeObject then
-        get streamQode.create() then
-            set global streamQodeObject to it
-    end
+    call streamQode.loadFromLocalStorage()
 
+    if not (streamQode's object) then
+        call streamQode.create()
 end
 
 
@@ -18,23 +14,37 @@ def streamQode.create
         set streamQodeObject's blocks to []
         set streamQodeObject's app to {id:'', name:''}
     
-        return streamQodeObject
+        set streamQode's object to streamQodeObject
 end
 
-def streamQode.save(streamQodeObject)
+def streamQode.save
 
-    localStorage.setItem("streamQodeObject",JSON.stringify(streamQodeObject))
+    localStorage.setItem("streamQodeObject",JSON.stringify(streamQode's object))
 
 end
 
-def streamQode.loadFromLocalStorage()
+def streamQode.loadFromLocalStorage
+
     get localStorage.getItem("streamQodeObject") then
         set streamQodeObject to it
     
     if streamQodeObject is '{}' then
-        return null
+        set streamQodeObject to null
     else
-        return JSON.parse(streamQodeObject)
+        set streamQodeObject to JSON.parse(streamQodeObject)
     end
     
+    set streamQode's object to streamQodeObject
+end
+
+def streamQode.addCodeBlock(blockCode)
+        set blockCodeObject to {}
+
+        log blockCode
+        set blockCodeObject's id    to .stream-block's @block-id in blockCode
+        set blockCodeObject's name  to .stream-block-header-name-label-value's textContent in blockCode
+        set blockCodeObject's checkedOptions to <:checked/>'s name in  blockCode
+        log blockCodeObject
+
+        streamQode.object.blocks.push(blockCodeObject)
 end
