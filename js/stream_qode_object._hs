@@ -1,8 +1,40 @@
 init
+    get streamQode.loadFromLocalStorage() then
+        set  global streamQodeObject to it
+    
+    if not streamQodeObject then
+        get streamQode.create() then
+            set global streamQodeObject to it
+    end
 
-set global STREAM_QODE_OBJECT to {}
-get getUnicId() then 
-    set STREAM_QODE_OBJECT's id to it
-    set STREAM_QODE_OBJECT's createAt to Date.now() 
+end
 
+
+def streamQode.create
+    set streamQodeObject to {}
+    get getUnicId() then 
+        set streamQodeObject's id to it
+        set streamQodeObject's createAt to Date.now()
+        set streamQodeObject's blocks to []
+        set streamQodeObject's app to {id:'', name:''}
+    
+        return streamQodeObject
+end
+
+def streamQode.save(streamQodeObject)
+
+    localStorage.setItem("streamQodeObject",JSON.stringify(streamQodeObject))
+
+end
+
+def streamQode.loadFromLocalStorage()
+    get localStorage.getItem("streamQodeObject") then
+        set streamQodeObject to it
+    
+    if streamQodeObject is '{}' then
+        return null
+    else
+        return JSON.parse(streamQodeObject)
+    end
+    
 end
