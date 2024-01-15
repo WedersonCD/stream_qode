@@ -17,9 +17,6 @@
     <script type="text/hyperscript" src="./js/init._hs"></script>
     <script type="text/hyperscript" src="./js/stream_qode_object._hs"></script>
 
-
-      
-    
 </head>
 
 <body>
@@ -89,9 +86,7 @@
                     fetch ./blocks/stream_block_code_miniature.html as Fragment then put the result into miniatureBlockDiv
                     call setBlockIDDepply(miniatureBlockDiv,blockId)
                     put .stream-block-code-miniature in miniatureBlockDiv at the end of .content-blockView
-
-                call streamQode.addCodeBlock(setupBlockDiv)
-                
+                    
                 call selectBlock(blockId)
             end
             ">+</button>

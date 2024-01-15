@@ -1,8 +1,9 @@
 init
-    call streamQode.loadFromLocalStorage()
+    streamQode.loadFromLocalStorage()
 
     if not (streamQode's object) then
         call streamQode.create()
+    end
 end
 
 
@@ -16,6 +17,8 @@ def streamQode.create
     
         set streamQode's object to streamQodeObject
 end
+
+
 
 def streamQode.save
 
@@ -37,14 +40,33 @@ def streamQode.loadFromLocalStorage
     set streamQode's object to streamQodeObject
 end
 
-def streamQode.addCodeBlock(blockCode)
-        set blockCodeObject to {}
+def streamQode.resetAllCodeBlocks
 
-        log blockCode
-        set blockCodeObject's id    to .stream-block's @block-id in blockCode
-        set blockCodeObject's name  to .stream-block-header-name-label-value's textContent in blockCode
-        set blockCodeObject's checkedOptions to <:checked/>'s name in  blockCode
-        log blockCodeObject
+    set streamQode.object's blocks to []
+
+    for blockCodeId in .stream-block's @block-id
+        streamQode.addCodeBlock(blockCodeId)
+    end
+
+end
+
+def streamQode.addCodeBlock(blockId)
+        
+        set blockCodeObject to  {}
+        set blockCodeObject's checkedOptions to []
+
+        set blockCodeObject's id    to blockId
+        set blockCodeObject's name  to  first <div.stream-block-header-name-label[block-id='${blockId}']/>'s textContent
+        set blockCodeObject's name  to blockCodeObject's name.trim()
+        
+        get getElementByClassAndAttribute('.stream-block-code-header-options','block-id',blockId) then
+            set checkedOptions to <:checked/> in it    
+        
+        set blockCodeObject's checkedOptions to checkedOptions's name
+        
+        get getBlockEditor(blockId) then put it into blockEditor
+
+        set blockCodeObject's value to blockEditor.getValue()
 
         streamQode.object.blocks.push(blockCodeObject)
 end
