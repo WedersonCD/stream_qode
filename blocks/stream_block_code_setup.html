@@ -74,7 +74,6 @@
 
             on input
                 wait 5s
-                log target's name
                 set cacheKey to `streamQode-block-${my @block-id}`
                 set blockSessionObject to sessionStorage[cacheKey] as Object
 
@@ -82,25 +81,27 @@
                     set blockSessionObject's checkedOptions to []
                 end
                 blockSessionObject.checkedOptions.push()
-                set blockSessionObject's code to editor.getValue()
-
             end
             ">
             </div>
         </div>
         <div class="stream-block-code-body" _="
-            init js(me) return ace.edit(me) end put it into element editor
+            init
                 set @id to 'editor-'+@block-id
             end
 
             on mutation of anything
                 wait 5s
-                set cacheKey to `streamQode-block-${my @block-id}`
-                get getBlockEditor(@block-id) then put it into editor
-                set blockSessionObject to sessionStorage[cacheKey] as Object
-                set blockSessionObject's code to editor.getValue()
-                set sessionStorage[cacheKey] to JSON.stringify(blockSessionObject) 
-
+                get getElementByClassAndAttribute('.stream-block-code-body','block-id',@block-id) then
+                    if it then
+                        set cacheKey to `streamQode-block-${my @block-id}`
+                        get getBlockEditor(@block-id) then put it into editor
+                        set blockSessionObject to sessionStorage[cacheKey] as Object
+                        set blockSessionObject's code to editor.getValue()
+                        set sessionStorage[cacheKey] to JSON.stringify(blockSessionObject)
+                    else    
+                        detail.observer.disconnect()
+                    end
             end
         ">
             //Seu código vem aqui

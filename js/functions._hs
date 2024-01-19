@@ -52,8 +52,16 @@ end
 
 def removeBlock(blockId)
     get getElementByClassAndAttribute('.stream-block','block-id',blockId) then remove it
-
     send remove to <div.stream-block-code-miniature[block-id='${blockId}']/>
+    
+    set cacheKey to `streamQode-block-${blockId}`
+    sessionStorage.removeItem(cacheKey)
+    
+    set currentBlocks to sessionStorage.streamQodeBlocks as Object
+    set currentBlocks to currentBlocks.filter( \ item -> item != blockId)
+
+    set sessionStorage.streamQodeBlocks to JSON.stringify(currentBlocks)
+
 end
 
 def selectBlock(blockId)
