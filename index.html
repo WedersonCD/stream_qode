@@ -15,7 +15,7 @@
     
     <script type="text/hyperscript" src="./js/functions._hs"></script>
     <script type="text/hyperscript" src="./js/init._hs"></script>
-    <script type="text/hyperscript" src="./js/stream_qode_object._hs"></script>
+    <!--<script type="text/hyperscript" src="./js/stream_qode_object._hs"></script> -->
 
 </head>
 
@@ -46,7 +46,7 @@
         </div>
         <div class="select-template-searchBar">
             <input class="select-template-searchBar-search" type="text" _="
-            on keyup
+            on mutation
                 if the event's key is 'Escape'
                     set my value to ''
                     trigger keyup
@@ -88,6 +88,16 @@
                     put .stream-block-code-miniature in miniatureBlockDiv at the end of .content-blockView
                     
                 call selectBlock(blockId)
+
+
+                if not sessionStorage.streamQodeBlocks then
+                    set sessionStorage.streamQodeBlocks to '[]'
+                end
+
+                set currentBlocks to sessionStorage.streamQodeBlocks as Object
+                currentBlocks.push(blockId)
+                set sessionStorage.streamQodeBlocks to JSON.stringify(currentBlocks)
+
             end
             ">+</button>
             ↓
@@ -153,7 +163,10 @@
             <img class="header-openApp-open-icon" src="./assets/icons/open.svg" />
         </div>
     </section>
-    <section class="content">
+    <section class="content" _="
+
+
+    ">
         <section class="content-blockSetup">
         </section>
         <section class="content-blockView">

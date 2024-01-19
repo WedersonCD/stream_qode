@@ -7,13 +7,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Select Code Template</title>
     <style>
-        
 
     </style>
+    <script>
+        // register for the command keyword "foo"
+        _hyperscript.addCommand('foo', function (parser, runtime, tokens) {
+            console.log(typeof (tokens))
+            // A foo command  must start with "foo".
+            if (!tokens.match('foo')) return
+
+            // Parse an expression.
+            const expr = parser.requireElement('expression', tokens);
+
+            return {
+                // All expressions needed by the command to execute.
+                // These will be evaluated and the result will be passed back to us.
+                args: [expr],
+
+                // Implement the logic of the command.
+                // Can be synchronous or asynchronous.
+                // @param {Context} context The runtime context, contains local variables.
+                // @param {*} value The result of evaluating expr.
+                async op(context, value) {
+                    if (value == "foo") {
+                        console.log("A Wild Foo Was Found!")
+                    }
+                    // Return the next command to execute.
+                    return runtime.findNext(this)
+                }
+            }
+        })
+    </script>
+    <script type="text/hyperscript">
+        def testFoo()
+            set str to "foo"
+            foo str
+        end
+    </script>
 </head>
 
 <body>
-
 </body>
 
 </html>
