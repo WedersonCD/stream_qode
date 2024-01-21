@@ -14,6 +14,19 @@ def createAnLine(leftBlock,rightBlock)
     return it
 end
 
+def add_new_block(blockId)
+
+    make an <div/> then put it into setupBlockDiv
+        fetch ./blocks/stream_block_code_setup.html as Fragment then put the result into setupBlockDiv
+        call setBlockIDDepply(setupBlockDiv,blockId)
+        put .stream-block in setupBlockDiv at the end of .content-blockSetup
+
+    make an <div/> then put it into miniatureBlockDiv
+        fetch ./blocks/stream_block_code_miniature.html as Fragment then put the result into miniatureBlockDiv
+        call setBlockIDDepply(miniatureBlockDiv,blockId)
+        put .stream-block-code-miniature in miniatureBlockDiv at the end of .content-blockView
+end
+
 def getUnicId
     js
         return UTILS.get_unic_id()
@@ -45,7 +58,7 @@ end
 
 def getElementByClassAndAttribute(c,attribute,value)
     js(c,attribute,value)
-        return document.body.querySelector(c+"["+attribute+"='"+value+"']")
+        return document.body.querySelectorAll(c+"["+attribute+"='"+value+"']")
     end then
     return it
 end

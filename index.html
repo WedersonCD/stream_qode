@@ -19,7 +19,26 @@
 
 </head>
 
-<body>
+<body _="
+    init
+        if sessionStorage.streamQodeBlocks then
+            set streamQodeBlocksId to sessionStorage.streamQodeBlocks as Object
+
+            for blockObjectId in streamQodeBlocksId
+                set cacheKey to `streamQode-block-${blockObjectId}`
+                set blockObjects to sessionStorage[cacheKey] as Object
+
+                set blockName   to blockObjects's name
+
+                call add_new_block(blockObjectId)
+                get getElementByClassAndAttribute('.block-name-handle','block-id',blockObjectId) then
+                    send name_change(newName:blockName) to it
+
+            end
+
+        end
+    end
+">
     <div class="outfocus display-none popup" _="
         on click
              toggle .display-none on .popup end
@@ -77,18 +96,9 @@
             on click
                 get getUnicId() then put it into blockId
 
-                make an <div/> then put it into setupBlockDiv
-                    fetch ./blocks/stream_block_code_setup.html as Fragment then put the result into setupBlockDiv
-                    call setBlockIDDepply(setupBlockDiv,blockId)
-                    put .stream-block in setupBlockDiv at the end of .content-blockSetup
+                call add_new_block(blockId)
 
-                make an <div/> then put it into miniatureBlockDiv
-                    fetch ./blocks/stream_block_code_miniature.html as Fragment then put the result into miniatureBlockDiv
-                    call setBlockIDDepply(miniatureBlockDiv,blockId)
-                    put .stream-block-code-miniature in miniatureBlockDiv at the end of .content-blockView
-                    
                 call selectBlock(blockId)
-
 
                 if not sessionStorage.streamQodeBlocks then
                     set sessionStorage.streamQodeBlocks to '[]'
@@ -97,8 +107,11 @@
                 set currentBlocks to sessionStorage.streamQodeBlocks as Object
                 currentBlocks.push(blockId)
                 set sessionStorage.streamQodeBlocks to JSON.stringify(currentBlocks)
+        end
 
-            end
+        on add_block
+            
+        end
             ">+</button>
             ↓
         </div>
@@ -176,6 +189,7 @@
 
     <!--libs-->
     <script src='./js/libs/_hyperscript.min.js'></script>
+    <script src='./js/libs/hdb.min.js'></script>
     <script src='./js/libs/plain-draggable.min.js'></script>
     <script src='./js/libs/leader-line.min.js'></script>
     <script src='./js/libs/ace.js'></script>

@@ -1,23 +1,42 @@
 <div class="stream-block" _="
     init
         set cacheKey to `streamQode-block-${my @block-id}`
-        if not sessionStorage[cacheKey] then 
+        
+        if sessionStorage[cacheKey] then 
+            set blockSessionObject to sessionStorage[cacheKey] as Object
+            put blockSessionObject's name into .stream-block-header-name-label-value in me
+        else
             set blockSessionObject to {}
             set blockSessionObject's checkedOptions to []
             set blockSessionObject's name to 'New BLock Code'
             set sessionStorage[cacheKey] to JSON.stringify(blockSessionObject)
+
         end
     end
 ">
     <div class="stream-block-header">
         <div class="stream-block-header-name">
             <div class="stream-block-header-name-label block-name-handle" _="
+                init
+                    tell .stream-block-header-name-label-value in me
+                        set your @block-id to my @block-id
+                end
+            
+                on input from .stream-block-header-name-label-value in me
+                    send name_change(newName:target.textContent) to <div.block-name-handle[block-id='${my @block-id}']/>
+                end
 
-            on input from .stream-block-header-name-label-value in me
-                send name_change(newName:target.textContent) to <div.block-name-handle[block-id='${my @block-id}']/>
-                tell .stream-block-header-name-label-value in me
-                    set your @block-id to my @block-id
-            end
+                on focusout
+                    set cacheKey to `streamQode-block-${my @block-id}`
+                    set blockSessionObject to sessionStorage[cacheKey] as Object
+                    
+                    tell .stream-block-header-name-label-value in me
+                        set blockSessionObject's name to your textContent 
+
+                    set sessionStorage[cacheKey] to JSON.stringify(blockSessionObject)
+                    
+                end
+
             ">
                 <label class="stream-block-header-name-label-value" contenteditable="true" >New Block Code</label>
             </div>
@@ -73,14 +92,12 @@
             end
 
             on input
-                wait 5s
+                wait 3s
                 set cacheKey to `streamQode-block-${my @block-id}`
                 set blockSessionObject to sessionStorage[cacheKey] as Object
-
-                if not blockSessionObject.checkedOptions then
-                    set blockSessionObject's checkedOptions to []
-                end
-                blockSessionObject.checkedOptions.push()
+                set checkedOptions to <:checked/> in me
+                set blockSessionObject.checkedOptions to checkedOptions's name
+                set sessionStorage[cacheKey] to  JSON.stringify(blockSessionObject)
             end
             ">
             </div>
