@@ -50,7 +50,6 @@
             </div>
             <div class="stream-block-header-save-icon pointer" _="
             on click
-                
             
             end">
                 <img src="./assets/icons/save.svg" />
@@ -118,7 +117,7 @@
             on mutation of anything
                 wait 5s
                 get getElementByClassAndAttribute('.stream-block-code-body','block-id',@block-id) then
-                    if it then
+                    if it.length>0 then
                         set cacheKey to `streamQode-block-${my @block-id}`
                         get getBlockEditor(@block-id) then put it into editor
                         set blockSessionObject to sessionStorage[cacheKey] as Object
