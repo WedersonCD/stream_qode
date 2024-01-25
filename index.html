@@ -31,9 +31,10 @@
                 set blockName   to blockObjects's name
 
                 call add_new_block(blockObjectId)
+
                 get getElementByClassAndAttribute('.block-name-handle','block-id',blockObjectId) then
                     send name_change(newName:blockName) to it
-
+                
             end
 
         end

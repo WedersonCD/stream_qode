@@ -81,6 +81,12 @@
                         set its id to  @block-id+'-'+option.label
                         put it at end of inputDiv then
 
+                        set cacheKey to `streamQode-block-${my @block-id}`
+                        set blockSessionObject to sessionStorage[cacheKey] as Object
+                        if blockSessionObject.checkedOptions.includes(its name) then
+                            set its.checked to true
+                        end
+
                     make an <label/>
                         put option.label into it
                         put it at end of inputDiv
@@ -89,6 +95,7 @@
 
                     put inputDiv at the end of me
                 end
+
             end
 
             on input
@@ -99,6 +106,7 @@
                 set blockSessionObject.checkedOptions to checkedOptions's name
                 set sessionStorage[cacheKey] to  JSON.stringify(blockSessionObject)
             end
+
             ">
             </div>
         </div>
