@@ -2,102 +2,51 @@
 <html lang="en">
 
 <head>
+    <script src='./js/libs/_hyperscript.min.js'></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Select Code Template</title>
     <style>
-        .select-template {
-            z-index: 999;
-            position: absolute;
-            height: 300px;
-            width: 300px;
-            margin-left: 100px;
-            margin-top: 100px;
-            border-radius: 10px;
-            border: #000 solid 1px;
-            background-color: #f2f2ea;
-            display: flex;
-            flex-direction: column;
-            padding: 5px;
-        }
-
-        .select-template-searchBar{
-            flex-direction: row;
-            display: flex;
-            justify-content: center;
-            margin-top:-5px;
-            height: 30px;
-            width: 100%;
-        }
-
-        .select-template-title {
-            justify-content: center;
-            text-align: center;
-            margin-bottom: 5px;
-        }
-
-        .select-template-searchBar-search{
-            border:1px #000 solid;
-            width: 100%;
-
-        }
-
-        .select-template-templates{
-            height: 100%;
-            margin-top:5px;
-            padding: 5px;
-            display: flex;
-            flex-direction: row;
-            overflow-y: scroll;
-            flex-flow: wrap;
-
-        }
-
-        .select-template-templates-template {
-            margin:5px;
-            height: 110px;
-            width: 110px;
-            background-color: white;
-            text-align: center;
-            padding:5px;
-            overflow: hidden;
-        }
 
     </style>
+    <script>
+        // register for the command keyword "foo"
+        _hyperscript.addCommand('foo', function (parser, runtime, tokens) {
+            console.log(typeof (tokens))
+            // A foo command  must start with "foo".
+            if (!tokens.match('foo')) return
+
+            // Parse an expression.
+            const expr = parser.requireElement('expression', tokens);
+
+            return {
+                // All expressions needed by the command to execute.
+                // These will be evaluated and the result will be passed back to us.
+                args: [expr],
+
+                // Implement the logic of the command.
+                // Can be synchronous or asynchronous.
+                // @param {Context} context The runtime context, contains local variables.
+                // @param {*} value The result of evaluating expr.
+                async op(context, value) {
+                    if (value == "foo") {
+                        console.log("A Wild Foo Was Found!")
+                    }
+                    // Return the next command to execute.
+                    return runtime.findNext(this)
+                }
+            }
+        })
+    </script>
+    <script type="text/hyperscript">
+        def testFoo()
+            set str to "foo"
+            foo str
+        end
+    </script>
 </head>
 
 <body>
-    <div class="select-template">
-        <div class="select-template-title">
-            Select Code Template
-        </div>
-        <div class="select-template-searchBar">
-            <input class="select-template-searchBar-search" type="text"/>
-        </div>
-        <div class="select-template-templates">
-            <div class="select-template-templates-template">
-                Nome curto
-            </div>
-            <div class="select-template-templates-template">
-                Nome curto
-            </div>
-            <div class="select-template-templates-template">
-                Nome curtoNome curtoNome curto
-            </div>
-            <div class="select-template-templates-template">
-                
-            </div>
-            <div class="select-template-templates-template">
-                
-            </div>
-            <div class="select-template-templates-template">
-                
-            </div>
-            <div class="select-template-templates-template">
-                
-            </div>
-        </div>
-    </div>
 </body>
 
 </html>

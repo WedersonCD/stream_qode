@@ -1,0 +1,10 @@
+init 
+    repeat while no $QLIK
+        js
+            return QLIK
+        end
+        set $QLIK to it        
+        wait 0.5s
+    end
+
+end
