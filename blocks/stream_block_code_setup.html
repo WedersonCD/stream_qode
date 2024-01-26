@@ -9,6 +9,7 @@
             set blockSessionObject to {}
             set blockSessionObject's checkedOptions to []
             set blockSessionObject's name to 'New BLock Code'
+            set blockSessionObject's code to '//Add your code here'
             set sessionStorage[cacheKey] to JSON.stringify(blockSessionObject)
 
         end
@@ -112,6 +113,11 @@
         <div class="stream-block-code-body" _="
             init
                 set @id to 'editor-'+@block-id
+                
+                    set cacheKey to `streamQode-block-${my @block-id}`
+                    set blockSessionObject to sessionStorage[cacheKey] as Object
+                    get getBlockEditor(@block-id) then
+                        it.setValue(blockSessionObject's code)
             end
 
             on mutation of anything
@@ -128,7 +134,7 @@
                     end
             end
         ">
-            //Seu código vem aqui
+        //Add your code here
         </div>
     </div>
 </div>

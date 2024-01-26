@@ -195,9 +195,13 @@
     <script src='./js/libs/leader-line.min.js'></script>
     <script src='./js/libs/ace.js'></script>
     <script>
+
+        var linkRel = 'stylesheet';
+        var linkType = 'text/css';
+        var linkHref = 'http://localhost:4848/resources/qmfe/sense-client/8.0.15/256.63c60cf28252ebd478fd.css';
+
         //remove Qlik CSS
-        new Promise(r => setTimeout(()=>document.querySelector("head > link:nth-child(19)").remove(), 700));
-        
+        new Promise(r => setTimeout(()=>document.querySelector(`link[rel="${linkRel}"][type="${linkType}"][href="${linkHref}"]`).remove(), 700));
     </script>
 </body>
 
