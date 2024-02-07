@@ -3,50 +3,496 @@
 
 <head>
     <script src='./js/libs/_hyperscript.min.js'></script>
+    <script src="https://unpkg.com/idiomorph@0.3.0"></script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Select Code Template</title>
     <style>
+        .sqse-table_name {
+            font-weight: bold;
+            color: #92477d;
+        }
 
+        .sqse-comment {
+            color: #808080;
+        }
+
+        .sqse-fild {
+            font-weight: bold;
+            color: #cc9966;
+        }
+
+        .sqse-regular_statements {
+            font-weight: bold;
+            color: #6a8fde;
+        }
     </style>
-    <script>
-        // register for the command keyword "foo"
-        _hyperscript.addCommand('foo', function (parser, runtime, tokens) {
-            console.log(typeof (tokens))
-            // A foo command  must start with "foo".
-            if (!tokens.match('foo')) return
 
-            // Parse an expression.
-            const expr = parser.requireElement('expression', tokens);
-
-            return {
-                // All expressions needed by the command to execute.
-                // These will be evaluated and the result will be passed back to us.
-                args: [expr],
-
-                // Implement the logic of the command.
-                // Can be synchronous or asynchronous.
-                // @param {Context} context The runtime context, contains local variables.
-                // @param {*} value The result of evaluating expr.
-                async op(context, value) {
-                    if (value == "foo") {
-                        console.log("A Wild Foo Was Found!")
-                    }
-                    // Return the next command to execute.
-                    return runtime.findNext(this)
-                }
-            }
-        })
-    </script>
-    <script type="text/hyperscript">
-        def testFoo()
-            set str to "foo"
-            foo str
-        end
-    </script>
 </head>
 
 <body>
+
+
+    <div id="indd" style="height: 500px;">
+    </div>
+    <script>
+
+        function qtdLines(string){
+
+            var lines = string.match(/\n/g);
+
+            return lines ? lines.length+1 : 1;
+
+        }
+
+        class TokenType {
+            constructor(name, identificationFunction = null, items = [], runFunction = null) {
+                this.name = name
+                this.items = (items.length > 0) ? items.map((item) => item.toLowerCase()) : []
+                this.class = 'sqse-' + name
+                this.identificationFunction = identificationFunction || this.isMyItem
+                this.runFunction = runFunction
+            }
+
+            isMyItem(token) {
+                return this.items.includes(token.toLowerCase())
+            }
+
+        }
+
+        const tokenTypes = [
+            new TokenType('table_name', (token) => token.endsWith(':')),
+            new TokenType('regular_statements', null, ['LOAD', 'concatenate', 'from', 'where', 'SET', 'LET']),
+            new TokenType('comment', (token) => token.startsWith('//') || token.startsWith('/*'))
+
+        ]
+
+        const grouperToken = [
+            { start: '[', end: ']' },
+            { start: '"', end: '"' },
+            { start: '//', end: '\n' },
+            { start: '/*', end: '*/' },
+        ]
+
+        const emptyTokens = ['', ' ', '\n', '\t']
+        const separatorTokens = ['\n', ' ', '\t', ';', ',']
+
+        class CodeFragment {
+
+            constructor(code = '') {
+
+                this.tokenTypes = tokenTypes
+                this.grouperTokens = grouperToken
+                this.emptyTokens = emptyTokens
+                this.separatorTokens = separatorTokens
+
+                this.resetCodeFragment()
+
+            }
+
+            resetCodeFragment() {
+                this.code = {
+                    raw: '',
+                    trated: ''
+                }
+
+                this.tokens = {
+                    raw: [],
+                    grouped: [],
+                    queued: [],
+                    trated: []
+                }
+
+                this.currentToken = null
+            }
+
+            setCode(code) {
+                this.code.raw = code
+            }
+
+            tokenizerRawCode() {
+
+                const rawCode = this.code.raw;
+
+                let currentToken = ''
+
+                for (let charIndex = 0; charIndex < rawCode.length; charIndex++) {
+                    const currentChar = rawCode[charIndex]
+                    currentToken += currentChar
+
+                    if (this.separatorTokens.includes(currentChar)) {
+                        this.tokens.raw.push(currentToken)
+                        currentToken = ''
+                    }
+
+                }
+
+                if (currentToken !== '')
+                    this.tokens.raw.push(currentToken);
+
+            }
+
+            groupRawTokensUsingGrouperTokens() {
+
+                let groupedToken = this.currentToken
+
+                let grouperObject = this.grouperTokens.find(item => groupedToken.startsWith(item.start))
+
+                const isGroupedToken = !!grouperObject
+
+                while (isGroupedToken && this.tokensQueueHasItens() && !groupedToken.includes(grouperObject.end)) {
+                    groupedToken += this.tokensQueueGetNext() || ''
+                }
+
+                if (isGroupedToken) {
+                    this.tokens.grouped.push(groupedToken)
+                    this.tokensQueueNext()
+                }
+
+                return isGroupedToken
+
+            }
+
+            groupRawTokensUsingEmptyTokens() {
+
+                let groupEmptyToken = ''
+
+                while (this.emptyTokens.includes(this.currentToken)) {
+                    groupEmptyToken += this.currentToken
+                    this.tokensQueueNext()
+                }
+
+                if (groupEmptyToken !== '') this.tokens.grouped.push(groupEmptyToken);
+
+
+                return groupEmptyToken !== ''
+            }
+
+            groupRawTokens() {
+
+                this.tokensQueueNext()
+
+                /*
+                    Loop create to guarantee that current token will be evaluated to all groupRawTokens functions
+                //*/
+                do {
+
+
+                    let previousQueueLength = this.tokensQueueGetLength();
+                    this.groupRawTokensUsingGrouperTokens()
+                    this.groupRawTokensUsingEmptyTokens()
+
+                    //If the queue did't walk means that the token did't fit in any grouped
+                    if (previousQueueLength === this.tokensQueueGetLength()) {
+
+                        this.tokens.grouped.push(this.currentToken);
+                        this.tokensQueueNext()
+                    }
+
+                } while (this.tokensQueueHasItens())
+
+            }
+
+            treatGroupedTokens() {
+
+                const unidentifiedTokenType = new TokenType('unidentified'); // Single instance for all unidentified tokens
+
+                let elementCount = 0;
+
+                while (this.tokensQueueNext()) {
+
+                    let cleanedToken = this.cleanToken(this.currentToken);
+                    let escapedToken = this.escapeHTML(this.currentToken); // Assuming escapeHTML is a defined method
+
+                    let tratedTokenObject = {
+                        raw: this.currentToken,
+                        cleaned: cleanedToken,
+                        escaped: escapedToken,
+                        type: undefined
+                    };
+
+                    for (const tokenType of this.tokenTypes) {
+                        if (tokenType.identificationFunction(cleanedToken)) {
+                            tratedTokenObject.type = tokenType;
+                            break;
+                        }
+                    }
+
+                    if (!tratedTokenObject.type) tratedTokenObject.type = unidentifiedTokenType;
+
+                    // Escape raw token to prevent HTML injection
+                    tratedTokenObject.trated = `<spam element-position="${elementCount}" class="${tratedTokenObject.type.class}">${escapedToken}</spam>`;
+                    this.tokens.trated.push(tratedTokenObject);
+                    elementCount = elementCount + 1
+                }
+            }
+
+            treatCode() {
+                this.code.trated = this.tokens.trated.map((tratedTokenObject) => tratedTokenObject.trated).join('')
+
+            }
+
+            cleanToken(token) {
+
+                const pattern = new RegExp('[' + this.emptyTokens.join('') + ']', 'g');
+                let cleanedToken = token.replace(pattern, '');
+                cleanedToken = cleanedToken.toLowerCase()
+
+                return cleanedToken
+
+            }
+
+            escapeHTML(str) {
+                return str.replace(/[&<>'"]/g, function (match) {
+                    return {
+                        '&': '&amp;',
+                        '<': '&lt;',
+                        '>': '&gt;',
+                        "'": '&#39;',
+                        '"': '&quot;'
+                    }[match];
+                });
+            }
+
+            initializeQueueWithRawTokens() {
+                this.tokens.queued = this.tokens.raw
+            }
+
+            initializeQueueWithGroupedTokens() {
+                this.tokens.queued = this.tokens.grouped
+            }
+
+            tokensQueueNext() {
+                this.currentToken = this.tokens.queued.shift()
+                return typeof (this.currentToken) === 'string'
+            }
+
+            tokensQueueGetLength() {
+                return this.tokens.queued.length
+            }
+
+            tokensQueueGetNext() {
+                this.currentToken = this.tokens.queued.shift()
+                return this.currentToken
+            }
+
+            tokensQueueIsEmpty() {
+                return this.tokens.queued.length == 0 && !this.currentToken
+            }
+
+            tokensQueueHasItens() {
+                return !this.tokensQueueIsEmpty()
+            }
+
+
+            run(conf = { debugMode: false }) {
+
+                this.tokenizerRawCode()
+                if (conf.debugMode)
+                    console.log('this.tokens.raw:',this.tokens.raw)
+
+                this.initializeQueueWithRawTokens()
+                this.groupRawTokens()
+                if (conf.debugMode)
+                    console.log('this.tokens.grouped:',this.tokens.grouped)
+
+                this.initializeQueueWithGroupedTokens()
+                this.treatGroupedTokens()
+
+                this.treatCode()
+            }
+
+        }
+
+        class StreamQodeScriptEditor {
+
+            constructor() {
+                this.codeEditors = {}
+            }
+
+            new(parentId) {
+
+                let parentElement = document.getElementById(parentId)
+
+                this.codeEditors[parentId] = {
+                    parentId: parentId,
+                    parentElement: parentElement,
+                    element: this.getRawElement(),
+                    name: parentElement.name,
+                    codeFragment: new CodeFragment(),
+                    historyLimit: 10,
+                    history: [],
+                    beforeChangeObject: {
+                        key: undefined,
+                        event: undefined,
+                        qtdLines: 0,
+                        cursorPosition: undefined,
+                        ready: false
+                    },
+
+                }
+
+                this.showEditor(parentId)
+            }
+
+            showEditor(parentId) {
+
+                const editor = this.codeEditors[parentId]
+                editor.parentElement.appendChild(editor.element)
+
+            }
+
+            getRawElement() {
+                const pre = document.createElement('pre')
+                pre.style.height = '100%';
+                pre.style.width = '100%';
+                pre.className = 'sqse'
+                pre.setAttribute('contenteditable', 'true')
+
+                pre.oninput = this.oninput.bind(this)
+                pre.onkeydown = this.onkeydown.bind(this)
+
+                return pre
+            }
+
+            onkeydown(event) {
+                const target = event.target
+                const parentDiv = target.closest('div[id]');
+                const parentId = parentDiv.id;
+
+                const beforeChangeObject = this.codeEditors[parentId].beforeChangeObject
+
+                beforeChangeObject.childElementCount = event.target.childElementCount
+                beforeChangeObject.event = event
+                beforeChangeObject.key = event.key
+                beforeChangeObject.qtdLines = qtdLines(target.innerText)
+                beforeChangeObject.cursorPosition = this.getCursorPosition()
+                beforeChangeObject.ready = true
+            }
+
+            oninput(event) {
+                const inputType = event.inputType
+                const target = event.target;
+                const parentDiv = target.closest('div[id]');
+                const parentId = parentDiv.id;
+
+                console.log(inputType)
+                this.setCodeByEditorId(parentId, target.innerText);
+
+                // Update the content
+                target.innerHTML = this.getTratedCodeByEditorId(parentId);
+
+                this.defineNewCursorPositionByEditorId(parentId, inputType)
+            }
+
+            getCursorPosition() {
+                const preSelection = window.getSelection()
+                const preRange = preSelection.getRangeAt(0)
+                const communAncestor = preRange.commonAncestorContainer
+
+                //check if it is an textElement
+                const selectedElement = (communAncestor.nodeType === 3) ? communAncestor.parentNode : communAncestor;
+
+                const selectedElementPosition = selectedElement.getAttribute('element-position') || '0'
+                return { selectedElementPosition: parseInt(selectedElementPosition), offSet: preRange.startOffset }
+
+            }
+
+            defineNewCursorPositionByEditorId(editorId, inputType) {
+
+                const editorElement = this.codeEditors[editorId].element;
+                const beforeChangeObject = this.codeEditors[editorId].beforeChangeObject;
+
+                console.log('beforeChangeObject:',beforeChangeObject)
+
+                while (!beforeChangeObject.ready)
+                    console.log('Aguardando o keydown');
+
+
+                const newRange = document.createRange();
+                const newSelection = window.getSelection();
+
+                const preInputElementPosition = beforeChangeObject.cursorPosition.selectedElementPosition
+                const preInputOfffSet = beforeChangeObject.cursorPosition.offSet
+                const preInputElementChildCount = beforeChangeObject.childElementCount
+                const preInputQtdLines = beforeChangeObject.qtdLines
+
+                //If the element did't exist any more, get the previus one
+                const similarElement = editorElement.querySelector(`spam[element-position='${preInputElementPosition}']`) || editorElement.querySelector(`spam[element-position='${preInputElementPosition-1}']`)
+
+                const nextElement = similarElement.nextSibling || editorElement.lastChild
+                const nextElementText = nextElement.firstChild || ''
+                const nextElementPosition = parseInt(nextElement.getAttribute('element-position'))
+
+                let newTargetElement = undefined
+                let newTargetOffset = 0
+                /*
+                console.log('elementPosition: ', preInputElementPosition)
+                console.log('offSet: ', preInputOfffSet)
+
+                console.log('inputType: ', inputType)
+                console.log('similarElement: ', similarElement)
+                console.log('nextElement: ', nextElement)
+
+                console.log('preInputElementChildCount:', preInputElementChildCount)
+                console.log('editorElement.elementChildCount:', editorElement.childElementCount)
+                //*/
+
+                //if the child quantity did't change then
+                if (preInputElementChildCount === editorElement.childElementCount) {
+                    newTargetElement = similarElement
+                    newTargetOffset = similarElement.firstChild.length
+
+                //if the new input is an new paragraph
+                } else if (inputType === 'insertParagraph') {
+                    newTargetElement = nextElement;
+                    newTargetOffset  = 0
+                //if any option fix    
+                }else if (inputType === 'deleteContentBackward' && preInputQtdLines <  qtdLines(editorElement.innerText)){
+                    console.log('deletaram uma linha')
+                }else{
+                    newTargetElement = editorElement.lastChild
+                    newTargetOffset =  editorElement.lastChild.firstChild.length
+                }
+
+                //console.log('newTargetElement: ', newTargetElement)
+
+                newTargetOffset = Math.min(newTargetElement.firstChild.length, newTargetOffset);
+
+                newRange.setStart(newTargetElement.firstChild, newTargetOffset);
+                newRange.collapse(true)
+
+                newSelection.removeAllRanges();
+                newSelection.addRange(newRange);
+
+                beforeChangeObject.ready = false
+
+            }
+
+            getRawCodeByEditorId(parentId) {
+                return this.codeEditors[parentId].codeFragment.code.raw
+            }
+
+            getTratedCodeByEditorId(parentId) {
+                return this.codeEditors[parentId].codeFragment.code.trated
+            }
+
+            setCodeByEditorId(parentId, code) {
+                const codeFragment = this.codeEditors[parentId].codeFragment
+                codeFragment.resetCodeFragment()
+                codeFragment.setCode(code)
+                codeFragment.run({debugMode:false})
+            }
+        }
+
+        const editor = new StreamQodeScriptEditor();
+        editor.new('indd')
+        console.log('Editor:',editor)
+
+    </script>
+
+
 </body>
 
 </html>
